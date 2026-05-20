@@ -1,6 +1,12 @@
 import type { RouteLocationNormalized } from 'vue-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { resolveAuthRedirect } from '@/app/router/auth-navigation-guard'
+import { createResolveAuthRedirect } from '../src'
+
+const resolveAuthRedirect = createResolveAuthRedirect({
+  home: { name: 'Home' },
+  login: { name: 'Login' },
+  unauthorized: { name: 'Unauthorized' },
+})
 
 function makeTo(partial: Partial<RouteLocationNormalized> & { path: string, fullPath: string, meta: Record<string, unknown> }): RouteLocationNormalized {
   return {
@@ -103,5 +109,30 @@ describe('resolveAuthRedirect', () => {
     })
     const r = await resolveAuthRedirect(to, store)
     expect(r).toBe(true)
+  })
+
+  it('uses path-based redirects when configured', async () => {
+    const pathGuard = createResolveAuthRedirect({
+      home: { path: '/' },
+      login: { path: '/login' },
+      unauthorized: { path: '/unauthorized' },
+    })
+    const store = {
+      authChecked: true,
+      isAuthenticated: false,
+      sessionExpiryCode: null,
+      hasRole: () => false,
+      bootstrapAuth,
+    }
+    const to = makeTo({
+      path: '/dashboard',
+      fullPath: '/dashboard',
+      meta: { requiresAuth: true },
+    })
+    const r = await pathGuard(to, store)
+    expect(r).toEqual({
+      path: '/login',
+      query: { redirect: '/dashboard' },
+    })
   })
 })

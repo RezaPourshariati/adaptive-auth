@@ -7,6 +7,12 @@ export {
   isAuthApiErrorCode,
   toAuthApiError,
 } from './errors.js'
+export {
+  type AuthGuardRedirects,
+  type AuthGuardRedirectTarget,
+  type AuthStoreForGuard,
+  createResolveAuthRedirect,
+} from './guard/auth-navigation-guard.js'
 export { createHttpClient, type HttpRequest } from './http-client.js'
 export { createRefreshSession } from './refresh.js'
 export { bootstrapSession, type BootstrapSessionDeps, type BootstrapSessionResult } from './session/bootstrap.js'

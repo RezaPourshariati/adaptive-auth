@@ -37,6 +37,10 @@ export const config = {
   redisUrl: readString('REDIS_URL') || undefined,
   clientUrl: readString('CLIENT_URL', 'http://localhost:5173'),
   frontendUrl: readString('FRONTEND_URL', 'http://localhost:5173'),
+  /** Nuxt app origin for CORS (matches NUXT_PUBLIC_APP_URL in apps/nuxt-app). */
+  nuxtPublicAppUrl: readString('NUXT_PUBLIC_APP_URL', 'http://localhost:3000'),
+  /** Comma-separated extra origins, e.g. https://app.example.com,http://localhost:3001 */
+  corsOrigins: readString('CORS_ORIGINS'),
   email: {
     host: readString('EMAIL_HOST'),
     port: Number(readString('EMAIL_PORT', '587')) || 587,

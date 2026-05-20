@@ -4,12 +4,12 @@ import express from 'express'
 import errorHandler from './common/errors/error.middleware.js'
 import { correlationIdMiddleware } from './common/middleware/correlation-id.middleware.js'
 import { requireCsrf } from './common/middleware/csrf.middleware.js'
-import { config } from './config/env.js'
+import { getCorsAllowedOrigins } from './config/cors-origins.js'
 import { authRoutes } from './features/auth/index.js'
 import { userRoutes } from './features/users/index.js'
 
 const app = express()
-const allowedOrigins = [config.clientUrl, config.frontendUrl]
+const allowedOrigins = getCorsAllowedOrigins()
 
 app.use(cors({
   origin: allowedOrigins,

@@ -13,7 +13,7 @@ How does Vue Router decide who can see which route, when does it run `bootstrapA
 
 ## Guard sequence
 
-Logic lives in **`resolveAuthRedirect`** (`front-end/src/app/router/auth-navigation-guard.ts`) and is invoked from **`router.beforeEach`**.
+Logic lives in **`createResolveAuthRedirect`** (`packages/shared-auth/src/guard/auth-navigation-guard.ts`). Each app binds route names or paths in a thin wrapper (`apps/vue-app/src/app/router/auth-navigation-guard.ts`, `apps/nuxt-app/app/utils/auth-navigation-guard.ts`) and invokes it from **`router.beforeEach`** or Nuxt global middleware.
 
 1. Resolve Pinia **`auth`** store.
 2. If **`!authChecked`** → **`await bootstrapAuth()`** (refresh-first session restore).
@@ -26,7 +26,7 @@ Logic lives in **`resolveAuthRedirect`** (`front-end/src/app/router/auth-navigat
 ### Global guard
 
 ```ts
-// front-end/src/app/router/index.ts
+// apps/vue-app/src/app/router/index.ts
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
   const resolved = await resolveAuthRedirect(to, authStore)
@@ -39,13 +39,17 @@ router.beforeEach(async (to) => {
 ### Pure redirect resolver (unit-tested)
 
 ```ts
-// front-end/src/app/router/auth-navigation-guard.ts
-export async function resolveAuthRedirect(to, authStore) { /* ... */ }
+// packages/shared-auth — apps pass named or path-based targets
+export const resolveAuthRedirect = createResolveAuthRedirect({
+  home: { name: 'Home' },
+  login: { name: 'Login' },
+  unauthorized: { name: 'Unauthorized' },
+})
 ```
 
 ### Pinia + in-memory router (integration)
 
-`front-end/tests/router-integration.test.ts` builds a small **`createMemoryHistory`** router with the same **`beforeEach` → `resolveAuthRedirect`** wiring as production, then asserts navigation results for guest, auth, and role cases (including **`bootstrapAuth`** when `authChecked` is false).
+`packages/shared-auth/tests/auth-navigation-guard.test.ts` unit-tests the resolver. `apps/vue-app/tests/router-integration.test.ts` builds a small **`createMemoryHistory`** router with the same **`beforeEach` → `resolveAuthRedirect`** wiring as production.
 
 ### Safe post-login redirect + session UX
 

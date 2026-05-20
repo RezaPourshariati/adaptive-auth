@@ -49,6 +49,7 @@ Split the page when it answers more than one primary question. Reference pages m
 
 - [`reference/error-codes-and-meanings.md`](./reference/error-codes-and-meanings.md)
 - [`reference/config-matrix.md`](./reference/config-matrix.md)
+- [`monorepo-rollout.md`](./monorepo-rollout.md) — phased monorepo / canvas-aligned rollout checklist
 
 ## Legacy / Prior Notes
 

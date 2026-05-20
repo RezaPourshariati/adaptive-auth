@@ -1,0 +1,35 @@
+{
+  "name": "@adaptive-auth/nuxt-app",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --port 3000",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "type-check": "nuxt typecheck",
+    "test:e2e": "playwright test",
+    "lint": "eslint \"app/**/*.{ts,vue}\" \"e2e/**/*.ts\" \"*.ts\" \"*.mjs\"",
+    "lint:fix": "eslint \"app/**/*.{ts,vue}\" \"e2e/**/*.ts\" \"*.ts\" \"*.mjs\" --fix"
+  },
+  "dependencies": {
+    "@adaptive-auth/shared-auth": "workspace:*",
+    "@adaptive-auth/shared-types": "workspace:*",
+    "@pinia/nuxt": "^0.11.3",
+    "nuxt": "^4.4.6",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.34",
+    "vue-router": "^5.0.7"
+  },
+  "devDependencies": {
+    "@adaptive-auth/config-typescript": "workspace:*",
+    "@adaptive-auth/eslint-config": "workspace:*",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.0",
+    "eslint": "^10.4.0",
+    "typescript": "^6.0.3",
+    "vue-tsc": "^3.3.0"
+  }
+}
