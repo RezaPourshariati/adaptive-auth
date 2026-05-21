@@ -33,29 +33,35 @@ async function onSubmit() {
       class="register__form"
       @submit.prevent="onSubmit"
     >
-      <label>
+      <label for="register-name">
         Name
         <input
+          id="register-name"
           v-model="name"
           type="text"
+          placeholder="Name"
           required
           autocomplete="name"
         >
       </label>
-      <label>
+      <label for="register-email">
         Email
         <input
+          id="register-email"
           v-model="email"
           type="email"
+          placeholder="Email"
           required
           autocomplete="email"
         >
       </label>
-      <label>
+      <label for="register-password">
         Password
         <input
+          id="register-password"
           v-model="password"
           type="password"
+          placeholder="Password"
           required
           autocomplete="new-password"
         >

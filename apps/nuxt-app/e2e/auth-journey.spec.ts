@@ -10,10 +10,12 @@ test.describe('auth journey (nuxt)', () => {
     const name = 'E2E Nuxt User'
 
     await page.goto('/register')
-    await page.getByLabel(/^name$/i).fill(name)
-    await page.getByLabel(/^email$/i).fill(email)
-    await page.getByLabel(/^password$/i).fill(password)
-    await page.getByRole('button', { name: /create account/i }).click()
+    const createAccount = page.getByRole('button', { name: /create account/i })
+    await expect(createAccount).toBeVisible({ timeout: 60_000 })
+    await page.getByPlaceholder('Name').fill(name)
+    await page.getByPlaceholder('Email').fill(email)
+    await page.getByPlaceholder('Password').fill(password)
+    await createAccount.click()
     await page.waitForURL(/\/dashboard/, { timeout: 30_000 })
 
     await expect(page.getByRole('heading', { name: /dashboard/i })).toBeVisible()

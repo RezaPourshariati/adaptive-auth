@@ -15,12 +15,15 @@ pnpm type-check:nuxt-app
 pnpm lint:nuxt-app
 ```
 
-End-to-end (needs MongoDB + `services/auth-server` env; CORS must allow `http://localhost:3000`). Build shared packages first (`pnpm build:packages`) if `dist/` is missing. First time, install browsers: `pnpm --dir apps/nuxt-app exec playwright install chromium`.
+End-to-end (needs MongoDB + `services/auth-server` env; CORS must allow `http://localhost:3000`). `pretest:e2e` downloads Chromium automatically if missing.
 
 ```sh
-# from repo root
+pnpm build:packages
+pnpm build:nuxt-app   # optional locally; CI uses preview
 pnpm test:e2e:nuxt-app
 ```
+
+Or only install browsers: `pnpm --dir apps/nuxt-app test:e2e:install`
 
 Run API + both frontends:
 
