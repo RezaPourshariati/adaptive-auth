@@ -5,6 +5,7 @@ import { defineConfig } from '@playwright/test'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '../..')
+const isCi = !!process.env.CI
 
 /**
  * End-to-end tests expect the API and SPA to be reachable.
@@ -15,19 +16,21 @@ const repoRoot = path.resolve(__dirname, '../..')
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  forbidOnly: isCi,
+  retries: isCi ? 1 : 0,
   workers: 1,
+  timeout: isCi ? 90_000 : 30_000,
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:5173',
     trace: 'on-first-retry',
+    actionTimeout: isCi ? 60_000 : 30_000,
   },
   webServer: [
     {
-      command: 'pnpm dev',
+      command: isCi ? 'pnpm preview --port 5173' : 'pnpm dev',
       cwd: __dirname,
       url: 'http://localhost:5173',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: !isCi,
       timeout: 120_000,
     },
     {

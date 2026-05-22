@@ -1,0 +1,4 @@
+{
+  "extends": "@adaptive-auth/config-typescript/node-vite",
+  "include": ["playwright.config.ts", "e2e/**/*.ts"]
+}

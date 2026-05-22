@@ -20,6 +20,28 @@ on:
 jobs:
   deploy-check-vue-app:
     runs-on: ubuntu-latest
+    env:
+      MONGO_URI: mongodb://127.0.0.1:27017/adaptive-auth
+      JWT_SECRET: ci-jwt-secret-string-at-least-thirty-two-bytes!!
+      JWT_REFRESH_SECRET: ci-jwt-refresh-secret-at-least-thirty-two-bytes!!
+      CRYPTR_KEY: '01234567890123456789012345678901'
+      NODE_ENV: development
+      CLIENT_URL: http://localhost:5173
+      FRONTEND_URL: http://localhost:5173
+      NUXT_PUBLIC_APP_URL: http://localhost:3000
+      PLAYWRIGHT_API_ROOT: http://localhost:4000
+
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,6 +69,20 @@ jobs:
 
       - name: Build vue-app
         run: pnpm build:vue-app
+
+      - name: Install Playwright (Chromium)
+        run: pnpm --dir apps/vue-app exec playwright install chromium --with-deps
+
+      - name: End-to-end tests (vue-app + auth-server)
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-vue-app
+          path: apps/vue-app/playwright-report/
+          if-no-files-found: ignore
 
   deploy-check-nuxt-app:
     runs-on: ubuntu-latest

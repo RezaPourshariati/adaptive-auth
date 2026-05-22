@@ -11,6 +11,7 @@ AdaptiveAuth is a full-stack adaptive authentication starter organized as a pnpm
 - `packages/eslint-config` — shared ESLint flat configs (`vue`, `node`)
 - `packages/shared-types` — API contracts and DTOs (`AuthUser`, payloads, `UserRole`, …)
 - `packages/shared-auth` — browser auth HTTP client, refresh, CSRF, `bootstrapSession` (`@adaptive-auth/shared-auth/browser`)
+- `packages/validation` — shared Zod schemas for auth API bodies (`@adaptive-auth/validation`)
 - root — workspace orchestration, shared lint/TS config, CI ([rollout checklist](./docs/monorepo-rollout.md))
 
 ## Prerequisites

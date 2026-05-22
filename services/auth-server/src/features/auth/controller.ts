@@ -1,6 +1,7 @@
 import type { Response } from 'express'
 import type { AuthRequest, GooglePayload } from '../../types/auth.js'
 import crypto from 'node:crypto'
+import { firstZodIssueMessage, loginBodySchema, registerBodySchema } from '@adaptive-auth/validation'
 import bcrypt from 'bcryptjs'
 import Cryptr from 'cryptr'
 import asyncHandler from 'express-async-handler'
@@ -47,11 +48,10 @@ function getCryptr(): Cryptr {
 }
 
 export const registerUser = asyncHandler(async (req: AuthRequest, res: Response): Promise<void> => {
-  const { name, email, password } = req.body as { name: string, email: string, password: string }
-  if (!name || !email || !password)
-    throw new BadRequestError('Please fill in all required fields.')
-  if (password.length < 8)
-    throw new BadRequestError('Password must be at least 8 characters!')
+  const parsed = registerBodySchema.safeParse(req.body)
+  if (!parsed.success)
+    throw new BadRequestError(firstZodIssueMessage(parsed.error))
+  const { name, email, password } = parsed.data
 
   const userExists = await User.findOne({ email })
   if (userExists)
@@ -65,9 +65,10 @@ export const registerUser = asyncHandler(async (req: AuthRequest, res: Response)
 })
 
 export const loginUser = asyncHandler(async (req: AuthRequest, res: Response): Promise<void> => {
-  const { email, password } = req.body as { email: string, password: string }
-  if (!email || !password)
-    throw new BadRequestError('Please fill in all required fields.')
+  const parsed = loginBodySchema.safeParse(req.body)
+  if (!parsed.success)
+    throw new BadRequestError(firstZodIssueMessage(parsed.error))
+  const { email, password } = parsed.data
 
   const user = await User.findOne({ email })
   if (!user)
