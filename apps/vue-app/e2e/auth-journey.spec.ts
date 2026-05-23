@@ -14,10 +14,16 @@ test.describe('auth journey', () => {
     await page.getByPlaceholder('Email').fill(email)
     await page.getByPlaceholder('Password').fill(password)
     await page.getByRole('button', { name: /create account/i }).click()
-    await page.waitForURL(/\//, { timeout: 30_000 })
+    // Do not use /\// — that matches any URL with a slash (e.g. still on /register).
+    await page.waitForURL(
+      url => ['/', '/dashboard'].includes(new URL(url).pathname),
+      { timeout: 30_000 },
+    )
 
-    await page.goto('/dashboard')
-    await expect(page.getByRole('heading', { name: /dashboard/i })).toBeVisible()
+    await page.goto('/dashboard', { waitUntil: 'networkidle' })
+    await expect(page.getByRole('heading', { name: /dashboard/i })).toBeVisible({
+      timeout: 30_000,
+    })
 
     const refreshStatus = await page.evaluate(async (root) => {
       const res = await fetch(`${root}/api/auth/refresh`, {
