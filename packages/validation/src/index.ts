@@ -6,4 +6,9 @@ export {
   type RegisterBody,
   registerBodySchema,
 } from './auth.js'
-export { firstZodIssueMessage } from './parse.js'
+export {
+  firstZodIssueMessage,
+  type ParseBodyResult,
+  parseLoginBody,
+  parseRegisterBody,
+} from './parse.js'

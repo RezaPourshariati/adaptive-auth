@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { firstZodIssueMessage, loginBodySchema, registerBodySchema } from '../src'
+import {
+  firstZodIssueMessage,
+  loginBodySchema,
+  parseLoginBody,
+  parseRegisterBody,
+  registerBodySchema,
+} from '../src'
 
 describe('registerBodySchema', () => {
   it('accepts valid payload', () => {
@@ -36,5 +42,33 @@ describe('loginBodySchema', () => {
   it('requires email and password', () => {
     const r = loginBodySchema.safeParse({ email: '', password: '' })
     expect(r.success).toBe(false)
+  })
+})
+
+describe('parseRegisterBody', () => {
+  it('returns parsed value on success', () => {
+    const r = parseRegisterBody({
+      name: 'Ada',
+      email: 'ada@example.com',
+      password: 'password12',
+    })
+    expect(r).toEqual({
+      ok: true,
+      value: { name: 'Ada', email: 'ada@example.com', password: 'password12' },
+    })
+  })
+
+  it('returns message on failure', () => {
+    const r = parseRegisterBody({ name: '', email: 'bad', password: 'x' })
+    expect(r.ok).toBe(false)
+    if (!r.ok)
+      expect(r.message.length).toBeGreaterThan(0)
+  })
+})
+
+describe('parseLoginBody', () => {
+  it('returns parsed value on success', () => {
+    const r = parseLoginBody({ email: 'a@b.com', password: 'secret' })
+    expect(r.ok).toBe(true)
   })
 })

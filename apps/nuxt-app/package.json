@@ -19,6 +19,7 @@
   "dependencies": {
     "@adaptive-auth/shared-auth": "workspace:*",
     "@adaptive-auth/shared-types": "workspace:*",
+    "@adaptive-auth/validation": "workspace:*",
     "@pinia/nuxt": "^0.11.3",
     "nuxt": "^4.4.6",
     "pinia": "^3.0.4",

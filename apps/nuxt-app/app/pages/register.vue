@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { parseRegisterBody } from '@adaptive-auth/validation'
+
 definePageMeta({ guestOnly: true })
 
 const auth = useAuthStore()
@@ -12,9 +14,18 @@ const submitting = ref(false)
 
 async function onSubmit() {
   error.value = ''
+  const parsed = parseRegisterBody({
+    name: name.value,
+    email: email.value,
+    password: password.value,
+  })
+  if (!parsed.ok) {
+    error.value = parsed.message
+    return
+  }
   submitting.value = true
   try {
-    await auth.register({ name: name.value, email: email.value, password: password.value })
+    await auth.register(parsed.value)
     await router.push('/dashboard')
   }
   catch (e) {

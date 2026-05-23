@@ -15,7 +15,11 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      include: ['@adaptive-auth/shared-auth', '@adaptive-auth/shared-types'],
+      include: [
+        '@adaptive-auth/shared-auth',
+        '@adaptive-auth/shared-types',
+        '@adaptive-auth/validation',
+      ],
     },
   },
 })

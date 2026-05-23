@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { parseRegisterBody } from '@adaptive-auth/validation'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AuthNotice from '@/components/auth/AuthNotice.vue'
@@ -14,12 +15,17 @@ const errorMessage = ref('')
 
 async function handleRegister() {
   errorMessage.value = ''
+  const parsed = parseRegisterBody({
+    name: name.value,
+    email: email.value,
+    password: password.value,
+  })
+  if (!parsed.ok) {
+    errorMessage.value = parsed.message
+    return
+  }
   try {
-    await authStore.register({
-      name: name.value,
-      email: email.value,
-      password: password.value,
-    })
+    await authStore.register(parsed.value)
     await router.push('/')
   }
   catch (error) {

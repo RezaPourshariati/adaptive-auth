@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { isAuthApiErrorCode } from '@adaptive-auth/shared-auth'
+import { parseLoginBody } from '@adaptive-auth/validation'
 
 definePageMeta({ guestOnly: true })
 
@@ -20,9 +21,14 @@ const submitting = ref(false)
 
 async function onSubmit() {
   error.value = ''
+  const parsed = parseLoginBody({ email: email.value, password: password.value })
+  if (!parsed.ok) {
+    error.value = parsed.message
+    return
+  }
   submitting.value = true
   try {
-    await auth.login({ email: email.value, password: password.value })
+    await auth.login(parsed.value)
     const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
     await router.push(redirect)
   }

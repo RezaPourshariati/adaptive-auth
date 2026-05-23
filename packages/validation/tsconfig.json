@@ -1,7 +1,6 @@
 {
   "extends": "@adaptive-auth/config-typescript/base",
   "compilerOptions": {
-    "rootDir": "src",
     "declaration": true,
     "declarationMap": true,
     "noEmit": true,

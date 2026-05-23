@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { parseLoginBody } from '@adaptive-auth/validation'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AuthNotice from '@/components/auth/AuthNotice.vue'
@@ -40,8 +41,13 @@ onMounted(async () => {
 
 async function handleLogin() {
   errorMessage.value = ''
+  const parsed = parseLoginBody({ email: email.value, password: password.value })
+  if (!parsed.ok) {
+    errorMessage.value = parsed.message
+    return
+  }
   try {
-    await authStore.login({ email: email.value, password: password.value })
+    await authStore.login(parsed.value)
     await router.push(redirectTo.value)
   }
   catch (error) {
