@@ -34,8 +34,8 @@ test.describe('auth journey', () => {
     }, apiRoot)
     expect(refreshStatus).toBe(200)
 
-    await page.goto('/profile')
-    await page.getByRole('button', { name: /^logout$/i }).click()
+    await page.goto('/profile', { waitUntil: 'networkidle' })
+    await page.getByRole('main').getByRole('button', { name: /^logout$/i }).click()
     await page.waitForURL(/\/login/, { timeout: 15_000 })
 
     await page.goto('/dashboard')
