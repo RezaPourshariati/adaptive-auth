@@ -21,9 +21,9 @@ test.describe('auth journey', () => {
     )
 
     await page.goto('/dashboard', { waitUntil: 'networkidle' })
-    await expect(page.getByRole('heading', { name: /dashboard/i })).toBeVisible({
-      timeout: 30_000,
-    })
+    await expect(
+      page.getByRole('main').getByRole('heading', { name: /^dashboard$/i }),
+    ).toBeVisible({ timeout: 30_000 })
 
     const refreshStatus = await page.evaluate(async (root) => {
       const res = await fetch(`${root}/api/auth/refresh`, {
