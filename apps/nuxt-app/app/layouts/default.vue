@@ -1,67 +1,21 @@
-<script setup lang="ts">
-const auth = useAuthStore()
-const router = useRouter()
-
-async function onLogout() {
-  await auth.logout()
-  await router.push('/login')
-}
-</script>
-
 <template>
-  <div class="layout">
-    <header class="layout__header">
-      <NuxtLink to="/">
-        AdaptiveAuth (Nuxt)
-      </NuxtLink>
-      <nav class="layout__nav">
-        <NuxtLink to="/dashboard">
-          Dashboard
-        </NuxtLink>
+  <div class="flex min-h-screen flex-col bg-gray-50">
+    <header class="border-b border-gray-200 bg-white">
+      <div class="mx-auto flex h-12 max-w-6xl items-center justify-between px-6 md:px-8">
         <NuxtLink
-          v-if="auth.isAuthenticated"
-          to="/login"
-          @click.prevent="onLogout"
+          to="/"
+          class="text-lg font-semibold text-gray-900"
         >
-          Log out
+          AdaptiveAuth
         </NuxtLink>
-        <NuxtLink
-          v-else
-          to="/login"
-        >
-          Log in
-        </NuxtLink>
-      </nav>
+        <LayoutAppNav />
+      </div>
     </header>
-    <main class="layout__main">
+    <main class="mx-auto w-full max-w-6xl flex-1 p-6 md:p-8">
       <slot />
     </main>
+    <footer class="border-t border-gray-200 py-4 text-center text-sm text-gray-500">
+      AdaptiveAuth — Nuxt client
+    </footer>
   </div>
 </template>
-
-<style scoped>
-.layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  font-family: system-ui, sans-serif;
-}
-
-.layout__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.layout__nav {
-  display: flex;
-  gap: 1rem;
-}
-
-.layout__main {
-  flex: 1;
-  padding: 1.5rem;
-}
-</style>

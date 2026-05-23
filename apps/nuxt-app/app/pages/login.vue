@@ -2,118 +2,112 @@
 import { isAuthApiErrorCode } from '@adaptive-auth/shared-auth'
 import { parseLoginBody } from '@adaptive-auth/validation'
 
-definePageMeta({ guestOnly: true })
+definePageMeta({ guestOnly: true, layout: 'default' })
 
 const auth = useAuthStore()
 const route = useRoute()
 const router = useRouter()
 
-onMounted(() => {
+const email = ref('')
+const password = ref('')
+const errorMessage = ref('')
+
+const redirectTo = computed(() => {
+  const redirect = route.query.redirect
+  if (typeof redirect !== 'string')
+    return '/'
+  return redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/'
+})
+
+const sessionMessage = computed(() => {
+  const session = route.query.session
+  if (session === 'SESSION_IDLE_EXPIRED')
+    return 'You were inactive for too long. Please log in again.'
+  if (session === 'SESSION_ABSOLUTE_EXPIRED')
+    return 'Your maximum session time has ended. Please log in again.'
+  return auth.sessionExpiryMessage
+})
+
+onMounted(async () => {
   const code = route.query.session
   if (typeof code === 'string' && isAuthApiErrorCode(code))
     auth.setSessionExpiryCode(code)
+
+  if (!route.query.session)
+    return
+
+  const nextQuery = { ...route.query }
+  delete nextQuery.session
+  await router.replace({ query: nextQuery })
 })
 
-const email = ref('')
-const password = ref('')
-const error = ref('')
-const submitting = ref(false)
-
-async function onSubmit() {
-  error.value = ''
+async function handleLogin() {
+  errorMessage.value = ''
   const parsed = parseLoginBody({ email: email.value, password: password.value })
   if (!parsed.ok) {
-    error.value = parsed.message
+    errorMessage.value = parsed.message
     return
   }
-  submitting.value = true
   try {
     await auth.login(parsed.value)
-    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
-    await router.push(redirect)
+    await router.push(redirectTo.value)
   }
-  catch (e) {
-    error.value = e instanceof Error ? e.message : 'Login failed'
-  }
-  finally {
-    submitting.value = false
+  catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'Login failed'
   }
 }
 </script>
 
 <template>
-  <section class="login">
-    <h1>Log in</h1>
-    <p
-      v-if="auth.sessionExpiryMessage"
-      class="login__notice"
-    >
-      {{ auth.sessionExpiryMessage }}
+  <section class="mx-auto max-w-md py-10">
+    <h1 class="mb-4 text-2xl font-semibold">
+      Login
+    </h1>
+    <p class="mb-6 text-slate-600">
+      Sign in to access protected AdaptiveAuth routes.
     </p>
+
     <form
-      class="login__form"
-      @submit.prevent="onSubmit"
+      class="space-y-4"
+      @submit.prevent="handleLogin"
     >
-      <label>
-        Email
-        <input
-          v-model="email"
-          type="email"
-          required
-          autocomplete="email"
-        >
-      </label>
-      <label>
-        Password
-        <input
-          v-model="password"
-          type="password"
-          required
-          autocomplete="current-password"
-        >
-      </label>
-      <p
-        v-if="error"
-        class="login__error"
+      <input
+        v-model="email"
+        type="email"
+        placeholder="Email"
+        autocomplete="email"
+        class="w-full rounded border border-gray-300 px-3 py-2"
       >
-        {{ error }}
-      </p>
-      <button
+      <input
+        v-model="password"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        class="w-full rounded border border-gray-300 px-3 py-2"
+      >
+      <Button
         type="submit"
-        :disabled="submitting"
-      >
-        {{ submitting ? 'Signing in…' : 'Sign in' }}
-      </button>
+        label="Sign in"
+        class="w-full"
+        :disabled="auth.sessionLoading"
+        :loading="auth.sessionLoading"
+      />
     </form>
-    <p>
-      <NuxtLink to="/register">
+
+    <AuthNotice
+      v-if="errorMessage || sessionMessage"
+      class="mt-4"
+      kind="error"
+      :message="errorMessage || sessionMessage"
+    />
+
+    <p class="mt-4 text-sm">
+      <NuxtLink
+        to="/register"
+        class="text-blue-600 hover:underline"
+      >
         Create an account
       </NuxtLink>
     </p>
   </section>
 </template>
-
-<style scoped>
-.login {
-  max-width: 24rem;
-}
-
-.login__form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin: 1rem 0;
-}
-
-.login__form label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.login__error,
-.login__notice {
-  color: #b91c1c;
-  font-size: 0.875rem;
-}
-</style>

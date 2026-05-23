@@ -4,6 +4,8 @@ Nuxt 4 SPA for AdaptiveAuth. Uses the same `@adaptive-auth/shared-auth` client a
 
 Phase D runs with **`ssr: false`** so auth stays cookie/CSRF-based on the client (same as the incremental plan).
 
+UI uses **Tailwind v4** and **PrimeVue** (Aura theme), aligned with `apps/vue-app` for auth and home flows.
+
 ## Commands
 
 From repo root:

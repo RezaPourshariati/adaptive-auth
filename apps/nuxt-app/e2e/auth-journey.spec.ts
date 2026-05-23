@@ -18,7 +18,9 @@ test.describe('auth journey (nuxt)', () => {
     await createAccount.click()
     await page.waitForURL(/\/dashboard/, { timeout: 30_000 })
 
-    await expect(page.getByRole('heading', { name: /dashboard/i })).toBeVisible()
+    await expect(
+      page.getByRole('banner').getByRole('heading', { name: /^dashboard$/i }),
+    ).toBeVisible({ timeout: 30_000 })
 
     const refreshStatus = await page.evaluate(async (root) => {
       const res = await fetch(`${root}/api/auth/refresh`, {
@@ -29,7 +31,7 @@ test.describe('auth journey (nuxt)', () => {
     }, apiRoot)
     expect(refreshStatus).toBe(200)
 
-    await page.getByRole('link', { name: /^log out$/i }).click()
+    await page.getByRole('button', { name: /^logout$/i }).click()
     await page.waitForURL(/\/login/, { timeout: 15_000 })
 
     await page.goto('/dashboard')

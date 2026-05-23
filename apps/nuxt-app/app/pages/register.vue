@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { parseRegisterBody } from '@adaptive-auth/validation'
 
-definePageMeta({ guestOnly: true })
+definePageMeta({ guestOnly: true, layout: 'default' })
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -9,115 +9,83 @@ const router = useRouter()
 const name = ref('')
 const email = ref('')
 const password = ref('')
-const error = ref('')
-const submitting = ref(false)
+const errorMessage = ref('')
 
-async function onSubmit() {
-  error.value = ''
+async function handleRegister() {
+  errorMessage.value = ''
   const parsed = parseRegisterBody({
     name: name.value,
     email: email.value,
     password: password.value,
   })
   if (!parsed.ok) {
-    error.value = parsed.message
+    errorMessage.value = parsed.message
     return
   }
-  submitting.value = true
   try {
     await auth.register(parsed.value)
     await router.push('/dashboard')
   }
-  catch (e) {
-    error.value = e instanceof Error ? e.message : 'Registration failed'
-  }
-  finally {
-    submitting.value = false
+  catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'Registration failed'
   }
 }
 </script>
 
 <template>
-  <section class="register">
-    <h1>Register</h1>
+  <section class="mx-auto max-w-md py-10">
+    <h1 class="mb-4 text-2xl font-semibold">
+      Register
+    </h1>
+
     <form
-      class="register__form"
-      @submit.prevent="onSubmit"
+      class="space-y-4"
+      @submit.prevent="handleRegister"
     >
-      <label for="register-name">
-        Name
-        <input
-          id="register-name"
-          v-model="name"
-          type="text"
-          placeholder="Name"
-          required
-          autocomplete="name"
-        >
-      </label>
-      <label for="register-email">
-        Email
-        <input
-          id="register-email"
-          v-model="email"
-          type="email"
-          placeholder="Email"
-          required
-          autocomplete="email"
-        >
-      </label>
-      <label for="register-password">
-        Password
-        <input
-          id="register-password"
-          v-model="password"
-          type="password"
-          placeholder="Password"
-          required
-          autocomplete="new-password"
-        >
-      </label>
-      <p
-        v-if="error"
-        class="register__error"
+      <input
+        v-model="name"
+        type="text"
+        placeholder="Name"
+        autocomplete="name"
+        class="w-full rounded border border-gray-300 px-3 py-2"
       >
-        {{ error }}
-      </p>
-      <button
+      <input
+        v-model="email"
+        type="email"
+        placeholder="Email"
+        autocomplete="email"
+        class="w-full rounded border border-gray-300 px-3 py-2"
+      >
+      <input
+        v-model="password"
+        type="password"
+        placeholder="Password"
+        autocomplete="new-password"
+        class="w-full rounded border border-gray-300 px-3 py-2"
+      >
+      <Button
         type="submit"
-        :disabled="submitting"
-      >
-        {{ submitting ? 'Creating…' : 'Create account' }}
-      </button>
+        label="Create account"
+        class="w-full"
+        :disabled="auth.sessionLoading"
+        :loading="auth.sessionLoading"
+      />
     </form>
-    <p>
-      <NuxtLink to="/login">
+
+    <AuthNotice
+      v-if="errorMessage"
+      class="mt-4"
+      kind="error"
+      :message="errorMessage"
+    />
+
+    <p class="mt-4 text-sm">
+      <NuxtLink
+        to="/login"
+        class="text-blue-600 hover:underline"
+      >
         Already have an account?
       </NuxtLink>
     </p>
   </section>
 </template>
-
-<style scoped>
-.register {
-  max-width: 24rem;
-}
-
-.register__form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin: 1rem 0;
-}
-
-.register__form label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.register__error {
-  color: #b91c1c;
-  font-size: 0.875rem;
-}
-</style>

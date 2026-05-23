@@ -14,14 +14,15 @@ This doc mirrors the phased rollout plan (including items that lived on the Curs
 | **E — Validation**          | `packages/validation` (Zod register/login/change-password), auth-server `register` + `login` wired                          | Done   |
 | **E follow-up**             | Vue-app Playwright E2E in CI (`validate-vue-app`, `deploy-check-vue-app`)                                                   | Done   |
 | **F — Frontend validation** | `parseRegisterBody` / `parseLoginBody` on vue-app + nuxt-app login & register forms before API calls                        | Done   |
+| **G — UI parity (phase 1)** | Nuxt: Tailwind + PrimeVue (Aura), layouts/nav, auth pages aligned with vue-app                                              | Done   |
 
 ## Next steps (recommended order)
 
-1. **Land changes** — Smoke `pnpm dev:stack`, run `pnpm lint`, `pnpm type-check`, `pnpm test`, `pnpm build`, `pnpm test:e2e`, `pnpm test:e2e:nuxt-app`, commit and open a PR.
+1. **Land changes** — Smoke `pnpm dev:stack`, run full quality gates, commit and open a PR.
 
-2. **Nuxt SSR (when needed)** — Route-by-route SSR and server-side cookie/session forwarding for `bootstrapSession`; keep current SPA mode until SEO or first-hit auth matters.
+2. **UI parity (phase 2)** — Shared layout package or Nuxt routes for profile/users; vue-style dashboard sidebar.
 
-3. **UI parity** — Align Nuxt screens with vue-app (e.g. PrimeVue / shared component kit) if both apps stay product-facing.
+3. **Nuxt SSR (when needed)** — Route-by-route SSR and server-side cookie/session forwarding for `bootstrapSession`.
 
 4. **`turbo.json` (optional)** — Faster pipelines and clearer task graph once package/app count grows.
 
