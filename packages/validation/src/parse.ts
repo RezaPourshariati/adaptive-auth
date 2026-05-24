@@ -1,6 +1,6 @@
 import type { ZodError, ZodType } from 'zod'
-import type { LoginBody, RegisterBody } from './auth.js'
-import { loginBodySchema, registerBodySchema } from './auth.js'
+import type { ChangePasswordBody, LoginBody, RegisterBody } from './auth.js'
+import { changePasswordBodySchema, loginBodySchema, registerBodySchema } from './auth.js'
 
 /** First human-readable message from a Zod failure (for API 400 responses). */
 export function firstZodIssueMessage(error: ZodError): string {
@@ -29,4 +29,9 @@ export function parseRegisterBody(body: unknown): ParseBodyResult<RegisterBody> 
 /** Client-side login validation (same rules as auth-server). */
 export function parseLoginBody(body: unknown): ParseBodyResult<LoginBody> {
   return parseBody(loginBodySchema, body)
+}
+
+/** Client-side change-password validation (same rules as auth-server). */
+export function parseChangePasswordBody(body: unknown): ParseBodyResult<ChangePasswordBody> {
+  return parseBody(changePasswordBodySchema, body)
 }

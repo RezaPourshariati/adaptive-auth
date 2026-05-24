@@ -8,8 +8,9 @@ const guestLinks = [
 ]
 
 const authLinks = [
-  { name: 'Home', path: '/' },
   { name: 'Dashboard', path: '/dashboard' },
+  { name: 'Profile', path: '/profile' },
+  { name: 'Users', path: '/users', roles: ['admin', 'author'] },
 ]
 
 async function onLogout() {

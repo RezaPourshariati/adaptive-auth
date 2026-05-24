@@ -9,6 +9,7 @@ export {
 export {
   firstZodIssueMessage,
   type ParseBodyResult,
+  parseChangePasswordBody,
   parseLoginBody,
   parseRegisterBody,
 } from './parse.js'

@@ -1,13 +1,11 @@
 <script setup lang="ts">
-definePageMeta({ requiresAuth: true, layout: 'dashboard' })
+definePageMeta({
+  requiresAuth: true,
+  layout: 'app-shell',
+  pageTitle: 'Dashboard',
+})
 
 const auth = useAuthStore()
-const router = useRouter()
-
-async function onLogout() {
-  await auth.logout()
-  await router.push('/login')
-}
 </script>
 
 <template>
@@ -17,7 +15,7 @@ async function onLogout() {
       <span v-if="auth.user">, {{ auth.user.name }}.</span>
     </p>
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       <Card>
         <template #title>
           Session
@@ -31,24 +29,35 @@ async function onLogout() {
       </Card>
       <Card>
         <template #title>
-          Quick links
+          Profile
         </template>
         <template #content>
-          <div class="flex flex-wrap gap-2">
-            <Button
-              label="Home"
-              severity="secondary"
-              size="small"
-              @click="navigateTo('/')"
-            />
-            <Button
-              label="Logout"
-              severity="danger"
-              size="small"
-              outlined
-              @click="onLogout"
-            />
-          </div>
+          <p class="mb-4 text-sm text-gray-600">
+            Update your name, contact details, and bio.
+          </p>
+          <Button
+            label="Go to Profile"
+            severity="secondary"
+            class="w-full"
+            @click="navigateTo('/profile')"
+          />
+        </template>
+      </Card>
+      <Card
+        v-if="auth.hasRole('admin') || auth.hasRole('author')"
+      >
+        <template #title>
+          User management
+        </template>
+        <template #content>
+          <p class="mb-4 text-sm text-gray-600">
+            List users and update roles (admin / author).
+          </p>
+          <Button
+            label="Manage Users"
+            class="w-full"
+            @click="navigateTo('/users')"
+          />
         </template>
       </Card>
     </div>

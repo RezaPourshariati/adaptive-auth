@@ -28,7 +28,17 @@ export default defineNuxtConfig({
       },
     },
     components: {
-      include: ['Button', 'Card', 'InputText', 'Message', 'Password'],
+      include: [
+        'Button',
+        'Card',
+        'Column',
+        'DataTable',
+        'InputText',
+        'Message',
+        'Password',
+        'Select',
+        'Textarea',
+      ],
     },
   },
 

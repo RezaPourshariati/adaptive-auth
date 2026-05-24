@@ -22,6 +22,11 @@ test.describe('auth journey (nuxt)', () => {
       page.getByRole('banner').getByRole('heading', { name: /^dashboard$/i }),
     ).toBeVisible({ timeout: 30_000 })
 
+    await page.goto('/profile')
+    await expect(
+      page.getByRole('banner').getByRole('heading', { name: /^profile$/i }),
+    ).toBeVisible()
+
     const refreshStatus = await page.evaluate(async (root) => {
       const res = await fetch(`${root}/api/auth/refresh`, {
         method: 'POST',

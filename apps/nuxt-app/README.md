@@ -6,6 +6,8 @@ Phase D runs with **`ssr: false`** so auth stays cookie/CSRF-based on the client
 
 UI uses **Tailwind v4** and **PrimeVue** (Aura theme), aligned with `apps/vue-app` for auth and home flows.
 
+Authenticated workspace routes use the **`app-shell`** layout (header + sidebar): `/dashboard`, `/profile`, `/change-password`, `/users` (admin/author).
+
 ## Commands
 
 From repo root:

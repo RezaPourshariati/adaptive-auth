@@ -2,7 +2,9 @@ import type { AuthApiError, AuthApiErrorCode } from '@adaptive-auth/shared-auth'
 import type {
   AuthCredentials,
   AuthUser,
+  ChangePasswordPayload,
   RegisterPayload,
+  UpdateProfilePayload,
 } from '@adaptive-auth/shared-types'
 import { bootstrapSession } from '@adaptive-auth/shared-auth'
 import { defineStore } from 'pinia'
@@ -13,11 +15,14 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: false,
     bootstrapLoading: false,
     sessionLoading: false,
+    accountLoading: false,
     authChecked: false,
     sessionExpiryCode: null as AuthApiErrorCode | null,
   }),
   getters: {
     hasRole: state => (role: string) => state.user?.role === role,
+    isAdmin: state => state.user?.role === 'admin',
+    isAccountLoading: state => state.accountLoading,
     sessionExpiryMessage(state): string {
       if (state.sessionExpiryCode === 'SESSION_IDLE_EXPIRED')
         return 'You were inactive for too long. Please log in again.'
@@ -116,6 +121,38 @@ export const useAuthStore = defineStore('auth', {
         this.sessionLoading = false
       }
     },
+    async updateUser(payload: UpdateProfilePayload) {
+      const { users } = this.clients()
+      this.accountLoading = true
+      try {
+        const user = await users.updateUser(payload)
+        this.setUser(user)
+        return user
+      }
+      finally {
+        this.accountLoading = false
+      }
+    },
+    async sendVerificationEmail() {
+      const { auth } = this.clients()
+      this.accountLoading = true
+      try {
+        return await auth.sendVerificationEmail()
+      }
+      finally {
+        this.accountLoading = false
+      }
+    },
+    async changePassword(payload: ChangePasswordPayload) {
+      const { auth } = this.clients()
+      this.accountLoading = true
+      try {
+        return await auth.changePassword(payload)
+      }
+      finally {
+        this.accountLoading = false
+      }
+    },
     async logout() {
       const { auth } = this.clients()
       this.sessionLoading = true
@@ -125,6 +162,7 @@ export const useAuthStore = defineStore('auth', {
       finally {
         this.clearAuth()
         this.sessionLoading = false
+        useUsersStore().clearList()
       }
     },
   },
