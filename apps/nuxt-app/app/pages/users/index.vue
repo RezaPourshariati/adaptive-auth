@@ -95,12 +95,12 @@ async function handleRoleUpdate(id: string) {
       <Column
         field="name"
         header="Name"
-        sortable
+        :sortable="true"
       />
       <Column
         field="email"
         header="Email"
-        sortable
+        :sortable="true"
       />
       <Column header="Role">
         <template #body="{ data }">

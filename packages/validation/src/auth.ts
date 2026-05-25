@@ -18,6 +18,18 @@ export const changePasswordBodySchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters!'),
 })
 
+/** Forgot-password request (email only). */
+export const forgotPasswordBodySchema = z.object({
+  email: z.string().trim().min(1, 'Please fill in all required fields.').email('Please provide a valid email.'),
+})
+
+/** Reset-password request (new password). */
+export const resetPasswordBodySchema = z.object({
+  password: z.string().min(8, 'Password must be at least 8 characters!'),
+})
+
 export type RegisterBody = z.infer<typeof registerBodySchema>
 export type LoginBody = z.infer<typeof loginBodySchema>
 export type ChangePasswordBody = z.infer<typeof changePasswordBodySchema>
+export type ForgotPasswordBody = z.infer<typeof forgotPasswordBodySchema>
+export type ResetPasswordBody = z.infer<typeof resetPasswordBodySchema>

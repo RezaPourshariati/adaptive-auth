@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { parseResetPasswordBody } from '@adaptive-auth/validation'
-import { computed, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import AuthNotice from '@/components/auth/AuthNotice.vue'
-import { useAuthStore } from '@/features/auth'
 
+definePageMeta({ guestOnly: true, layout: 'default' })
+
+const auth = useAuthStore()
 const route = useRoute()
 const router = useRouter()
-const authStore = useAuthStore()
 
 const password = ref('')
 const errorMessage = ref('')
@@ -28,7 +26,7 @@ async function handleSubmit() {
     return
   }
   try {
-    const result = await authStore.resetPassword(resetToken.value, parsed.value.password)
+    const result = await auth.resetPassword(resetToken.value, parsed.value.password)
     successMessage.value = result.message
     setTimeout(() => {
       router.push('/login')
@@ -45,24 +43,32 @@ async function handleSubmit() {
     <h1 class="mb-4 text-2xl font-semibold">
       Reset Password
     </h1>
+    <p class="mb-6 text-slate-600">
+      Choose a new password for your account.
+    </p>
+
     <form
       class="space-y-4"
       @submit.prevent="handleSubmit"
     >
-      <input
+      <Password
         v-model="password"
-        type="password"
         placeholder="New password"
-        class="w-full rounded border px-3 py-2"
-      >
-      <button
+        toggle-mask
+        :feedback="false"
+        input-class="w-full"
+        class="w-full"
+        autocomplete="new-password"
+      />
+      <Button
         type="submit"
-        class="rounded bg-slate-900 px-4 py-2 text-white disabled:opacity-60"
-        :disabled="authStore.isAccountLoading"
-      >
-        {{ authStore.isAccountLoading ? 'Updating...' : 'Update Password' }}
-      </button>
+        label="Update password"
+        class="w-full"
+        :disabled="auth.isAccountLoading"
+        :loading="auth.isAccountLoading"
+      />
     </form>
+
     <AuthNotice
       v-if="successMessage"
       class="mt-4"
@@ -75,5 +81,14 @@ async function handleSubmit() {
       kind="error"
       :message="errorMessage"
     />
+
+    <p class="mt-4 text-sm">
+      <NuxtLink
+        to="/login"
+        class="text-blue-600 hover:underline"
+      >
+        Back to login
+      </NuxtLink>
+    </p>
   </section>
 </template>

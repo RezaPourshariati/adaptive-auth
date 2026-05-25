@@ -62,7 +62,17 @@ async function handleSubmit() {
             toggle-mask
             class="w-full"
             input-class="w-full"
-          />
+          >
+            <template #footer>
+              <Divider />
+              <ul class="pl-2 my-0 leading-normal text-sm">
+                <li>At least one lowercase</li>
+                <li>At least one uppercase</li>
+                <li>At least one numeric</li>
+                <li>Minimum 8 characters</li>
+              </ul>
+            </template>
+          </Password>
           <Button
             type="submit"
             label="Update password"

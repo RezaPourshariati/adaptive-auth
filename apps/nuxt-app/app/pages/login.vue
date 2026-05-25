@@ -101,13 +101,23 @@ async function handleLogin() {
       :message="errorMessage || sessionMessage"
     />
 
-    <p class="mt-4 text-sm">
-      <NuxtLink
-        to="/register"
-        class="text-blue-600 hover:underline"
-      >
-        Create an account
-      </NuxtLink>
+    <p class="mt-4 space-y-1 text-sm">
+      <span class="block">
+        <NuxtLink
+          to="/forgot-password"
+          class="text-blue-600 hover:underline"
+        >
+          Forgot password?
+        </NuxtLink>
+      </span>
+      <span class="block">
+        <NuxtLink
+          to="/register"
+          class="text-blue-600 hover:underline"
+        >
+          Create an account
+        </NuxtLink>
+      </span>
     </p>
   </section>
 </template>

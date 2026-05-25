@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { parseForgotPasswordBody } from '@adaptive-auth/validation'
-import { ref } from 'vue'
-import AuthNotice from '@/components/auth/AuthNotice.vue'
-import { useAuthStore } from '@/features/auth'
 
-const authStore = useAuthStore()
+definePageMeta({ guestOnly: true, layout: 'default' })
+
+const auth = useAuthStore()
+
 const email = ref('')
 const errorMessage = ref('')
 const successMessage = ref('')
@@ -18,7 +18,7 @@ async function handleSubmit() {
     return
   }
   try {
-    const result = await authStore.forgotPassword(parsed.value.email)
+    const result = await auth.forgotPassword(parsed.value.email)
     successMessage.value = result.message
   }
   catch (error) {
@@ -32,6 +32,10 @@ async function handleSubmit() {
     <h1 class="mb-4 text-2xl font-semibold">
       Forgot Password
     </h1>
+    <p class="mb-6 text-slate-600">
+      Enter your email and we will send a reset link if an account exists.
+    </p>
+
     <form
       class="space-y-4"
       @submit.prevent="handleSubmit"
@@ -40,16 +44,18 @@ async function handleSubmit() {
         v-model="email"
         type="email"
         placeholder="Email"
-        class="w-full rounded border px-3 py-2"
+        autocomplete="email"
+        class="w-full rounded border border-gray-300 px-3 py-2"
       >
-      <button
+      <Button
         type="submit"
-        class="rounded bg-slate-900 px-4 py-2 text-white disabled:opacity-60"
-        :disabled="authStore.isAccountLoading"
-      >
-        {{ authStore.isAccountLoading ? 'Submitting...' : 'Send Reset Link' }}
-      </button>
+        label="Send reset link"
+        class="w-full"
+        :disabled="auth.isAccountLoading"
+        :loading="auth.isAccountLoading"
+      />
     </form>
+
     <AuthNotice
       v-if="successMessage"
       class="mt-4"
@@ -62,5 +68,14 @@ async function handleSubmit() {
       kind="error"
       :message="errorMessage"
     />
+
+    <p class="mt-4 text-sm">
+      <NuxtLink
+        to="/login"
+        class="text-blue-600 hover:underline"
+      >
+        Back to login
+      </NuxtLink>
+    </p>
   </section>
 </template>

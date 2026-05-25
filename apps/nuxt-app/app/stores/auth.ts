@@ -153,6 +153,36 @@ export const useAuthStore = defineStore('auth', {
         this.accountLoading = false
       }
     },
+    async forgotPassword(email: string) {
+      const { auth } = this.clients()
+      this.accountLoading = true
+      try {
+        return await auth.forgotPassword(email)
+      }
+      finally {
+        this.accountLoading = false
+      }
+    },
+    async resetPassword(resetToken: string, password: string) {
+      const { auth } = this.clients()
+      this.accountLoading = true
+      try {
+        return await auth.resetPassword(resetToken, password)
+      }
+      finally {
+        this.accountLoading = false
+      }
+    },
+    async verifyUser(verificationToken: string) {
+      const { auth } = this.clients()
+      this.accountLoading = true
+      try {
+        return await auth.verifyUser(verificationToken)
+      }
+      finally {
+        this.accountLoading = false
+      }
+    },
     async logout() {
       const { auth } = this.clients()
       this.sessionLoading = true

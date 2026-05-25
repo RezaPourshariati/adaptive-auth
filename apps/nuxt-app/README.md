@@ -8,6 +8,10 @@ UI uses **Tailwind v4** and **PrimeVue** (Aura theme), aligned with `apps/vue-ap
 
 Authenticated workspace routes use the **`app-shell`** layout (header + sidebar): `/dashboard`, `/profile`, `/change-password`, `/users` (admin/author).
 
+Guest auth flows: `/login`, `/register`, `/forgot-password`, `/reset-password/:token`, `/verify/:token` (email link from auth-server).
+
+Public pages: `/`, `/about`, `/contacts`.
+
 ## Commands
 
 From repo root:
