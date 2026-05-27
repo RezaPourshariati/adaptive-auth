@@ -44,16 +44,21 @@ Split the page when it answers more than one primary question. Reference pages m
 ## Architecture Decisions / Trade-offs
 
 - [`decisions/adr-001-explicit-refresh-authority.md`](./decisions/adr-001-explicit-refresh-authority.md)
+- [`decisions/architecture-review-v2.md`](./decisions/architecture-review-v2.md) — graded review after monorepo restructure
+- [`decisions/product-strategy-analysis.md`](./decisions/product-strategy-analysis.md) — product directions from architecture DNA
+- [`decisions/eslint-monorepo-strategy.md`](./decisions/eslint-monorepo-strategy.md) — ESLint strategy for monorepo packages
+- [`decisions/discussion.md`](./decisions/discussion.md) — architecture direction review
 
 ## Reference
 
 - [`reference/error-codes-and-meanings.md`](./reference/error-codes-and-meanings.md)
 - [`reference/config-matrix.md`](./reference/config-matrix.md)
-- [`monorepo-rollout.md`](./monorepo-rollout.md) — phased monorepo / canvas-aligned rollout checklist
+- [`reference/monorepo-rollout.md`](./reference/monorepo-rollout.md) — phased monorepo / canvas-aligned rollout checklist
+- [`reference/adaptive-auth-platform-documentation.md`](./reference/adaptive-auth-platform-documentation.md) — comprehensive platform documentation
 
 ## Legacy / Prior Notes
 
 These are older documents and may not fully reflect the current architecture:
 
-- [`advanced-authentication-architecture.md`](./advanced-authentication-architecture.md)
-- [`HYBRID-ARCHITECTURE.md`](./HYBRID-ARCHITECTURE.md)
+- [`legacy/advanced-authentication-architecture.md`](./legacy/advanced-authentication-architecture.md)
+- [`legacy/HYBRID-ARCHITECTURE.md`](./legacy/HYBRID-ARCHITECTURE.md)
