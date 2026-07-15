@@ -31,6 +31,8 @@ Split the page when it answers more than one primary question. Reference pages m
 
 - [`frontend/auth-orchestration.md`](./frontend/auth-orchestration.md)
 - [`frontend/routing-auth-guards.md`](./frontend/routing-auth-guards.md)
+- [`frontend/layout-conventions.md`](./frontend/layout-conventions.md) — how vue-app picks layouts and owns chrome vs pages
+- [`frontend/vue-app-target-structure.md`](./frontend/vue-app-target-structure.md) — target `app/` + `features/` + `layouts/` + `shared/` tree and cleanup order
 
 ## Backend Session Handling
 
