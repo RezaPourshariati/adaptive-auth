@@ -8,7 +8,7 @@
         animation-duration=".9s"
         aria-label="Application is loading"
       />
-      <span class="text-sm font-medium">Preparing layout...</span>
+      <span class="text-sm font-medium">Preparing session...</span>
     </div>
   </div>
 </template>

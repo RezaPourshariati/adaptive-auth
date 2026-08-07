@@ -1,33 +1,41 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import AppBootstrapLoader from '@/app/components/AppBootstrapLoader.vue'
+import { useAuthStore } from '@/features/auth'
 import AppLayout from '@/layouts/AppLayout.vue'
 
-// onMounted(async () => {
-//   try {
-//     await router.isReady()
-//     if (!authStore.authChecked)
-//       await authStore.bootstrapAuth()
-//   }
-//   finally {
-//     isAppReady.value = true
-//   }
-// })
+const router = useRouter()
+const authStore = useAuthStore()
+const isAppReady = ref(false)
+
+onMounted(async () => {
+  try {
+    await router.isReady()
+    if (!authStore.authChecked)
+      await authStore.bootstrapAuth()
+  }
+  finally {
+    isAppReady.value = true
+  }
+})
 </script>
 
 <template>
-  <!-- ✅ 90% TailwindCSS + 10% global theme variables -->
-  <div class="min-h-screen flex flex-col font-sans antialiased text-center theme-app">
+  <div class="min-h-screen flex flex-col font-sans antialiased text-center theme-app overflow-x-hidden">
     <Transition
       name="app-shell"
       mode="out-in"
       appear
     >
-      <!-- <div
+      <div
         v-if="!isAppReady"
         key="bootstrap-loader"
       >
         <AppBootstrapLoader />
-      </div> -->
+      </div>
       <AppLayout
+        v-else
         key="app-layout"
       >
         <router-view />
