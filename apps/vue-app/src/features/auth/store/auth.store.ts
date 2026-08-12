@@ -5,7 +5,7 @@ import type {
   ChangePasswordPayload,
   RegisterPayload,
   UpdateProfilePayload,
-} from '@/types'
+} from '@/shared/types'
 import { bootstrapSession } from '@adaptive-auth/shared-auth'
 import { defineStore } from 'pinia'
 import * as usersService from '@/features/users/api/users.api'

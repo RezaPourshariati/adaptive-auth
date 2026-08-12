@@ -2,14 +2,11 @@ import type { LayoutConfig, ResolvedLayouts } from './types'
 import { defineAsyncComponent } from 'vue'
 import { getLayoutConfig, layoutPresets } from './presets'
 
-export const defaultLayout: string = 'simple'
+export const defaultLayout: string = 'marketing'
 
-// Composable layout system
 export const BaseLayout = defineAsyncComponent(() => import('./BaseLayout.vue'))
 
-// Helper function to resolve layout configuration
 export function resolveLayout(layoutIdentifier: string | LayoutConfig | undefined): ResolvedLayouts {
-  // If no layout specified, use default
   if (!layoutIdentifier) {
     return {
       component: BaseLayout,
@@ -17,7 +14,6 @@ export function resolveLayout(layoutIdentifier: string | LayoutConfig | undefine
     }
   }
 
-  // If layout is a configuration object, use BaseLayout with config
   if (typeof layoutIdentifier === 'object') {
     return {
       component: BaseLayout,
@@ -25,7 +21,6 @@ export function resolveLayout(layoutIdentifier: string | LayoutConfig | undefine
     }
   }
 
-  // If layout is a preset name, use BaseLayout with preset config
   if (layoutPresets[layoutIdentifier]) {
     return {
       component: BaseLayout,
@@ -33,7 +28,6 @@ export function resolveLayout(layoutIdentifier: string | LayoutConfig | undefine
     }
   }
 
-  // Fallback to default for unknown layout names
   console.warn(`Layout "${layoutIdentifier}" not found. Using default layout.`)
   return {
     component: BaseLayout,
@@ -41,6 +35,6 @@ export function resolveLayout(layoutIdentifier: string | LayoutConfig | undefine
   }
 }
 
-export { getLayoutConfig, layoutPresets } from './presets'
-// Export types and presets
-export type { LayoutConfig } from './types'
+export { buildNavLinks } from './nav-from-routes'
+export { createLayoutConfig, getLayoutConfig, layoutPresets } from './presets'
+export type { LayoutConfig, NavGroup, NavLink } from './types'
