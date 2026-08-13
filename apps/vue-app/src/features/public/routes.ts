@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
+import { createLayoutConfig } from '@/layouts'
 
 export const publicRoutes: RouteRecordRaw[] = [
   {
@@ -6,7 +7,8 @@ export const publicRoutes: RouteRecordRaw[] = [
     name: 'Unauthorized',
     component: () => import('@/features/public/views/UnauthorizedView.vue'),
     meta: {
-      layout: 'simple',
+      layout: 'marketing',
+      title: 'Unauthorized',
     },
   },
   {
@@ -14,7 +16,26 @@ export const publicRoutes: RouteRecordRaw[] = [
     name: 'Home',
     component: () => import('@/features/public/views/HomeView.vue'),
     meta: {
-      layout: 'home',
+      // Documented one-off: hero gradient chrome for the home route only.
+      layout: createLayoutConfig({
+        name: 'home',
+        header: {
+          type: 'hero',
+          showNavigation: true,
+          title: 'Welcome Home',
+          height: '8rem',
+        },
+        container: {
+          maxWidth: '1100px',
+          centered: true,
+          padding: '2rem',
+          className: 'home-container',
+        },
+      }),
+      showInNav: true,
+      navGroup: 'public',
+      navOrder: 10,
+      title: 'Home',
     },
   },
   {
@@ -22,7 +43,11 @@ export const publicRoutes: RouteRecordRaw[] = [
     name: 'About',
     component: () => import('@/features/public/views/AboutView.vue'),
     meta: {
-      layout: 'about',
+      layout: 'marketing',
+      showInNav: true,
+      navGroup: 'public',
+      navOrder: 20,
+      title: 'About',
     },
   },
   {
@@ -30,7 +55,11 @@ export const publicRoutes: RouteRecordRaw[] = [
     name: 'Contacts',
     component: () => import('@/features/public/views/ContactsView.vue'),
     meta: {
-      layout: 'contacts',
+      layout: 'marketing',
+      showInNav: true,
+      navGroup: 'public',
+      navOrder: 30,
+      title: 'Contacts',
     },
   },
   {
@@ -38,12 +67,11 @@ export const publicRoutes: RouteRecordRaw[] = [
     name: 'Landing',
     component: () => import('@/features/public/views/LandingView.vue'),
     meta: {
-      layout: 'landing',
+      layout: 'marketing',
+      showInNav: true,
+      navGroup: 'public',
+      navOrder: 40,
+      title: 'Landing',
     },
-  },
-  {
-    path: '/test',
-    name: 'Test',
-    component: () => import('@/features/public/views/HomeView.vue'),
   },
 ]
