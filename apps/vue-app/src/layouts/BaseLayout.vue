@@ -11,32 +11,30 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const isFullHeight = computed(() => Boolean(props.config.container?.fullHeight))
+
 const layoutClasses = computed(() => [
-  'min-h-screen flex flex-col',
+  'flex flex-col',
   props.config.className,
-  {
-    'h-screen': props.config.container?.fullHeight,
-  },
+  isFullHeight.value ? 'h-screen max-h-screen overflow-hidden' : 'min-h-screen',
 ])
 
 const contentClasses = computed(() => [
-  'mx-auto my-0 flex flex-1 flex-col overflow-hidden',
+  'mx-auto my-0 flex flex-1 flex-col min-h-0 min-w-0',
   props.config.container?.className,
+  {
+    'overflow-hidden': isFullHeight.value,
+  },
 ])
 
 const bodyClasses = computed(() => [
-  'relative flex flex-1 max-md:flex-col',
-  {
-    'h-full': props.config.container?.fullHeight,
-  },
+  'relative flex flex-1 min-h-0 max-md:flex-col',
 ])
 
 const contentContainerClasses = computed(() => [
-  'flex-1 overflow-y-auto content-reveal max-md:p-4',
+  'flex-1 min-h-0 content-reveal max-md:p-4',
   props.config.sidebar ? 'p-6' : 'p-8',
-  {
-    'h-full': props.config.container?.fullHeight,
-  },
+  isFullHeight.value ? 'overflow-y-auto' : '',
 ])
 
 const contentStyles = computed(() => {
@@ -56,7 +54,6 @@ const contentStyles = computed(() => {
 
 <template>
   <div :class="layoutClasses">
-    <!-- Header -->
     <Transition
       name="layout-section"
       appear
@@ -64,18 +61,17 @@ const contentStyles = computed(() => {
       <LayoutHeader
         v-if="config.header"
         :config="config.header"
+        class="shrink-0"
       />
     </Transition>
 
-    <!-- Main Layout Body -->
     <div :class="bodyClasses">
-      <!-- Left Sidebar -->
       <LayoutSidebar
         v-if="config.sidebar?.position === 'left'"
         :config="config.sidebar"
+        class="shrink-0"
       />
 
-      <!-- Main Content Area -->
       <main
         :class="contentClasses"
         :style="contentStyles"
@@ -85,14 +81,13 @@ const contentStyles = computed(() => {
         </div>
       </main>
 
-      <!-- Right Sidebar -->
       <LayoutSidebar
         v-if="config.sidebar?.position === 'right'"
         :config="config.sidebar"
+        class="shrink-0"
       />
     </div>
 
-    <!-- Footer -->
     <Transition
       name="layout-section"
       appear
@@ -100,6 +95,7 @@ const contentStyles = computed(() => {
       <LayoutFooter
         v-if="config.footer?.show"
         :config="config.footer"
+        class="shrink-0"
       />
     </Transition>
   </div>
