@@ -6,113 +6,109 @@ How should routes pick a layout, what presets exist, and where do chrome vs page
 
 ## Short answer
 
-- One shell: **`App.vue` → `AppLayout` → `BaseLayout` → page view**.
+- One shell: **`App.vue` → `AppLayout` → `BaseLayout` → page view** (nested areas insert `RouterViewOutlet` between `AppLayout` and the page).
 - Pick layout via **`route.meta.layout`**: a **preset name** (preferred) or an inline **`LayoutConfig`** (exceptions only).
-- Keep a small preset set aligned to product areas — not one preset per page color.
-- Layout owns chrome (header, nav, sidebar, footer). Views own page content.
+- Product presets: **`auth`**, **`marketing`**, **`app`**, **`admin`**.
+- Primary nav is derived from route meta (`showInNav`, `navGroup`, `navOrder`, `title`) via **`buildNavLinks`**.
+- Layout owns chrome; views own page content.
 
 ## Shell sequence
 
-1. **`App.vue`** wraps the app shell and mounts `<router-view />` inside **`AppLayout`**.
+1. **`App.vue`** waits for auth bootstrap, then mounts `<router-view />` inside **`AppLayout`**.
 2. **`AppLayout`** reads **`route.meta.layout`** and calls **`resolveLayout()`**.
 3. **`BaseLayout`** renders header / sidebar / main / footer from the resolved **`LayoutConfig`**.
-4. The feature **view** fills the main slot only.
+4. Feature **views** fill the main slot (directly, or via **`RouterViewOutlet`** for nested parents).
 
 Do not import layout components from feature views. Do not duplicate header/footer markup in pages.
 
-## Preset catalog (target)
+## Preset catalog
 
-Use these named presets. Prefer a name over an inline config.
+| Preset      | When to use                                                                                                                           |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `auth`      | Login, register, forgot/reset password, verify email — minimal chrome, no primary nav                                                 |
+| `marketing` | Public pages (about, contacts, landing, unauthorized). Home uses a documented `createLayoutConfig` hero override on top of marketing. |
+| `app`       | Authenticated general app pages (dashboard, profile) — header + nav sidebar                                                           |
+| `admin`     | Privileged areas (admin, users) — header + admin/filter sidebar                                                                       |
 
-| Preset      | When to use                                                                                                    |
-| ----------- | -------------------------------------------------------------------------------------------------------------- |
-| `auth`      | Login, register, forgot/reset password, verify email — minimal chrome, no marketing nav if possible            |
-| `marketing` | Public marketing pages (home, about, contacts, landing) — shared header/footer; page styling stays in the view |
-| `app`       | Authenticated general app pages (dashboard, profile) — app chrome + optional sidebar                           |
-| `admin`     | Privileged areas (users, admin tools) — app chrome + admin/filter sidebar                                      |
-
-### Migration note (current → target)
-
-Today’s presets (`simple`, `home`, `about`, `contacts`, `landing`, `dashboard`, `admin`) are showcase-oriented. Collapse toward the four product presets above:
-
-| Current                                | Target                                                             |
-| -------------------------------------- | ------------------------------------------------------------------ |
-| `simple` (auth routes)                 | `auth`                                                             |
-| `home`, `about`, `contacts`, `landing` | `marketing` (vary look in the view or via tokens, not new presets) |
-| `dashboard`                            | `app`                                                              |
-| `admin`                                | `admin`                                                            |
-| Inline profile config                  | Prefer `app` + page-level styling, or one documented override      |
+Default when `meta.layout` is omitted: **`marketing`** (`layouts/index.ts`).
 
 ## Choosing `meta.layout`
 
-**Preferred — preset name:**
+**Preferred — preset name on a concrete parent path (never bare `/` if Home owns `/`):**
 
 ```ts
-meta: {
-  layout: 'app',
-  requiresAuth: true,
+{
+  path: '/dashboard',
+  component: RouterViewOutlet,
+  meta: { layout: 'app', requiresAuth: true },
+  children: [{
+    path: '',
+    name: 'Dashboard',
+    component: () => import('...'),
+    meta: {
+      showInNav: true,
+      navGroup: 'app',
+      navOrder: 50,
+      title: 'Dashboard',
+    },
+  }],
 }
 ```
 
-**Allowed — inline `LayoutConfig`:** only when a route needs a one-off chrome difference that will not become a third shared pattern. Prefer documenting why in a comment near the route.
+**Allowed — `createLayoutConfig(...)`:** documented one-offs only (Home uses this for the hero gradient header without adding a fifth product preset).
 
-**Default:** if `meta.layout` is omitted, resolution falls back to the default preset (`simple` today; target default should be `marketing` or `app` once migration finishes — keep one explicit default in `layouts/index.ts`).
+### Why `config.name: 'marketing'`?
+
+Two different “names” exist:
+
+1. **Preset key** in `layoutPresets` (`marketing`, `app`, …) — what routes put in `meta.layout: 'marketing'`.
+2. **`config.name`** on the resolved `LayoutConfig` — an id on the config object itself (useful for overrides/debugging).
+
+They usually match. The preset key is what routing cares about; `config.name` is not a second layout system.
+
+## Nested areas
+
+Parents that share chrome own **`meta.layout`** on a **concrete path** (`/dashboard`, `/users`, …). Do **not** register multiple parents at bare `path: '/'` — the first one steals Home and renders an empty `RouterViewOutlet`.
+
+## Navigation meta
+
+| Meta        | Role                                                         |
+| ----------- | ------------------------------------------------------------ |
+| `showInNav` | Include in primary / sidebar nav                             |
+| `navGroup`  | `public` \| `guest` \| `app` \| `admin`                      |
+| `navOrder`  | Sort key (public 10–40, app 50–60, admin 65–70, guest 80–90) |
+| `title`     | Link label                                                   |
+
+`LayoutNavigation` and `SidebarNavigation` both call **`buildNavLinks`**.
 
 ## Ownership boundaries
 
-| Concern                             | Owner                                        | Location                |
-| ----------------------------------- | -------------------------------------------- | ----------------------- |
-| Header / footer / sidebar structure | Layout                                       | `layouts/`              |
-| Primary nav links                   | Layout (driven by route meta where possible) | `layouts/components/`   |
-| Auth / role gating of routes        | Router guards                                | `app/router/`           |
-| Page copy, forms, feature UI        | Feature view                                 | `features/*/views/`     |
-| Page-specific SCSS                  | Feature or `styles/pages/`                   | not in presets          |
-| Layout chrome SCSS                  | Shared layout styles                         | `assets/styles/layout/` |
-
-## Navigation rules
-
-- Prefer deriving nav from route **`meta`** (`showInNav`, `navGroup`, `navOrder`, `title`) instead of hardcoding path lists in **`LayoutNavigation`**.
-- Adding a navigable page should not require editing layout components except when introducing a new nav _group_.
-- Guest vs authenticated vs role links remain layout chrome, but the _source of truth_ should be the route table.
-
-## Nested areas (target)
-
-For product areas that share chrome (e.g. admin), prefer a parent route that owns **`meta.layout: 'admin'`** and **`children`** pages, instead of repeating the same layout on every leaf.
-
-Flat `meta.layout` on each leaf remains valid for small apps and demos.
-
-## Sidebar content
-
-Sidebar sections currently map string keys (`navigation`, `filters`, `info`) to fixed components. Conventions:
-
-- Stable product sidebars stay in **`layouts/components/`**.
-- Feature-specific sidebar panels should not require editing **`LayoutSidebar`** forever — prefer slots or registered widgets as the app grows.
-- Do not stuff page forms into the sidebar config unless the sidebar is truly shared chrome.
-
-## Styling hybrid
-
-- **Layout chrome:** utilities in Vue layout components + `assets/styles/layout/`.
-- **Page look:** view templates + `assets/styles/pages/` when Sass is needed.
-- Do not invent a new preset solely to change a header color; use tokens / view classes / a small override in `LayoutConfig` if truly shared.
+| Concern                             | Owner               | Location                                             |
+| ----------------------------------- | ------------------- | ---------------------------------------------------- |
+| Header / footer / sidebar structure | Layout              | `layouts/`                                           |
+| Primary nav links                   | Route meta → layout | `features/*/routes.ts`, `layouts/nav-from-routes.ts` |
+| Auth / role gating                  | Router guards       | `app/router/`                                        |
+| Page copy, forms, feature UI        | Feature view        | `features/*/views/`                                  |
 
 ## Anti-patterns
 
 - One preset per route that only differs by header color.
 - Importing `BaseLayout` or header components inside feature views.
-- Hardcoding every new path in `LayoutNavigation` without route meta.
-- Leaving demo routes (`/test`) or doc-only layout examples (`layouts/examples.ts`) in the production tree.
-- Thin re-exports that keep both old and new import paths alive indefinitely.
+- Hardcoding path lists in `LayoutNavigation` / `SidebarNavigation`.
+- Demo routes or `layouts/examples.ts` in production `src/`.
+- Thin re-exports that keep old and new import paths alive.
 
 ## Code anchors
 
-- Resolver: `apps/vue-app/src/layouts/index.ts` (`resolveLayout`)
+- Resolver: `apps/vue-app/src/layouts/index.ts`
 - Presets: `apps/vue-app/src/layouts/presets.ts`
-- Types / `RouteMeta.layout`: `apps/vue-app/src/layouts/types.ts`
-- Shell wiring: `apps/vue-app/src/App.vue`, `apps/vue-app/src/layouts/AppLayout.vue`
+- Nav builder: `apps/vue-app/src/layouts/nav-from-routes.ts`
+- Types / `RouteMeta`: `apps/vue-app/src/layouts/types.ts`
+- Shell: `apps/vue-app/src/App.vue`, `apps/vue-app/src/layouts/AppLayout.vue`
 - Feature routes: `apps/vue-app/src/features/*/routes.ts`
 
 ## Out of scope for this page
 
-- Target folder tree and cleanup order → [`vue-app-target-structure.md`](./vue-app-target-structure.md)
+- Target folder tree → [`vue-app-target-structure.md`](./vue-app-target-structure.md)
 - Auth guard behavior → [`routing-auth-guards.md`](./routing-auth-guards.md)
 - Auth/session orchestration → [`auth-orchestration.md`](./auth-orchestration.md)

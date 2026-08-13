@@ -18,6 +18,8 @@ apps/vue-app/src/
 ├── App.vue                    # app shell + AppLayout + router-view
 ├── app/
 │   ├── main.ts                # createApp, plugins, router, mount
+│   ├── components/
+│   │   └── AppBootstrapLoader.vue
 │   ├── plugins/
 │   │   └── primevue.ts
 │   ├── router/
@@ -50,9 +52,11 @@ apps/vue-app/src/
 ├── layouts/
 │   ├── AppLayout.vue          # meta.layout → resolveLayout
 │   ├── BaseLayout.vue         # header / sidebar / main / footer
+│   ├── RouterViewOutlet.vue   # nested parent outlet
 │   ├── index.ts               # resolveLayout, exports
+│   ├── nav-from-routes.ts     # buildNavLinks from route meta
 │   ├── presets.ts             # product presets only (auth, marketing, app, admin)
-│   ├── types.ts               # LayoutConfig + RouteMeta.layout
+│   ├── types.ts               # LayoutConfig + RouteMeta.layout / nav meta
 │   └── components/
 │       ├── LayoutHeader.vue
 │       ├── LayoutFooter.vue
@@ -99,12 +103,14 @@ Avoid keeping both old and new paths for the same module once call sites are upd
 
 ## Cleanup order (suggested)
 
-1. **Point imports at canonical paths** (AuthNotice, PrimeVue, auth types/API) and delete shims.
-2. **Collapse layout presets** to `auth` / `marketing` / `app` / `admin` and update `features/*/routes.ts` (see [layout-conventions.md](./layout-conventions.md)).
-3. **Drive nav from route meta** (`showInNav`, `navGroup`, `navOrder`, `title`); slim hardcoded lists in `LayoutNavigation`.
-4. **Nest admin/dashboard children** under a parent that owns `meta.layout` when those areas gain more than one real page.
-5. **Move or delete** `layouts/examples.ts` and demo routes.
-6. **Restore bootstrap gate** in `App.vue` if auth flash remains an issue (loader until `authChecked`).
+1. **Point imports at canonical paths** (AuthNotice, PrimeVue, auth types/API) and delete shims. ✅
+2. **Collapse layout presets** to `auth` / `marketing` / `app` / `admin` and update `features/*/routes.ts`. ✅
+3. **Drive nav from route meta** (`showInNav`, `navGroup`, `navOrder`, `title`); slim hardcoded lists in `LayoutNavigation`. ✅
+4. **Nest admin/dashboard children** under a parent that owns `meta.layout`. ✅
+5. **Move or delete** `layouts/examples.ts` and demo routes. ✅
+6. **Restore bootstrap gate** in `App.vue` (loader until `authChecked`). ✅
+
+See [layout-conventions.md](./layout-conventions.md) for the current preset and nav rules.
 
 ## Relationship to layouts
 
