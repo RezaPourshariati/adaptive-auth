@@ -1,114 +1,61 @@
 import type { LayoutConfig, LayoutPreset } from './types'
 
-// Predefined layout configurations for common use cases
+/** Product-area presets — prefer these over per-page showcase variants. */
 export const layoutPresets: Record<string, LayoutPreset> = {
-  // Simple page layout (like your current AppLayoutDefault)
-  simple: {
-    name: 'Simple Layout',
-    description: 'Minimal layout with just content',
+  auth: {
+    name: 'Auth Layout',
+    description: 'Minimal chrome for authentication flows',
     config: {
-      name: 'simple',
-      header: {
-        type: 'minimal',
-        showNavigation: true,
-        height: '3rem',
-      },
-      container: {
-        maxWidth: '1200px',
-        centered: true,
-        padding: '2rem',
-      },
-      footer: {
-        show: true,
-        variant: 'minimal',
-      },
-    },
-  },
-
-  // Home page layout (like your current AppLayoutHome)
-  home: {
-    name: 'Home Layout',
-    description: 'Hero header with centered content',
-    config: {
-      name: 'home',
-      header: {
-        type: 'hero',
-        color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        showNavigation: true,
-        title: 'Welcome Home',
-        height: '8rem',
-      },
-      container: {
-        maxWidth: '1100px',
-        centered: true,
-        padding: '2rem',
-        className: 'home-container',
-      },
-      footer: {
-        show: true,
-        variant: 'standard',
-      },
-    },
-  },
-
-  // About page layout (like your current AppLayoutAbout)
-  about: {
-    name: 'About Layout',
-    description: 'Standard header with blue theme',
-    config: {
-      name: 'about',
-      header: {
-        type: 'standard',
-        color: '#2196F3',
-        showNavigation: true,
-        height: '5rem',
-      },
-      container: {
-        maxWidth: '1200px',
-        centered: true,
-        padding: '2rem',
-      },
-      footer: {
-        show: true,
-        variant: 'standard',
-      },
-    },
-  },
-
-  // Contact page layout (like your current AppLayoutContacts)
-  contacts: {
-    name: 'Contacts Layout',
-    description: 'Standard header with red theme',
-    config: {
-      name: 'contacts',
-      header: {
-        type: 'standard',
-        color: '#f44336',
-        showNavigation: true,
-        height: '5rem',
-      },
-      container: {
-        maxWidth: '1200px',
-        centered: true,
-        padding: '2rem',
-      },
-      footer: {
-        show: true,
-        variant: 'extended',
-      },
-    },
-  },
-
-  // Dashboard layout with sidebar
-  dashboard: {
-    name: 'Dashboard Layout',
-    description: 'Full dashboard with navigation sidebar',
-    config: {
-      name: 'dashboard',
+      // `config.name` identifies the resolved config object (debugging / overrides).
+      // The preset *key* (`auth`) is what routes use in `meta.layout`.
+      name: 'auth',
       header: {
         type: 'minimal',
         showNavigation: false,
-        title: 'Dashboard',
+        height: '3rem',
+      },
+      container: {
+        maxWidth: '480px',
+        centered: true,
+        padding: '2rem',
+      },
+      footer: {
+        show: false,
+      },
+    },
+  },
+
+  marketing: {
+    name: 'Marketing Layout',
+    description: 'Public pages with shared header and footer',
+    config: {
+      name: 'marketing',
+      header: {
+        type: 'standard',
+        showNavigation: true,
+        height: '4rem',
+      },
+      container: {
+        maxWidth: '1200px',
+        centered: true,
+        padding: '2rem',
+      },
+      footer: {
+        show: true,
+        variant: 'standard',
+      },
+    },
+  },
+
+  app: {
+    name: 'App Layout',
+    description: 'Authenticated app chrome with navigation sidebar',
+    config: {
+      name: 'app',
+      header: {
+        type: 'minimal',
+        showNavigation: true,
+        title: 'AdaptiveAuth',
         height: '4rem',
       },
       sidebar: {
@@ -128,17 +75,16 @@ export const layoutPresets: Record<string, LayoutPreset> = {
     },
   },
 
-  // Admin layout with filters
   admin: {
     name: 'Admin Layout',
-    description: 'Admin interface with filters sidebar',
+    description: 'Privileged areas with admin sidebar',
     config: {
       name: 'admin',
       header: {
         type: 'standard',
         color: '#6c757d',
         showNavigation: true,
-        title: 'Admin Panel',
+        title: 'Admin',
         height: '4rem',
       },
       sidebar: {
@@ -158,83 +104,19 @@ export const layoutPresets: Record<string, LayoutPreset> = {
       },
     },
   },
-
-  // Full-width layout for landing pages
-  landing: {
-    name: 'Landing Layout',
-    description: 'Full-width layout for marketing pages',
-    config: {
-      name: 'landing',
-      header: {
-        type: 'hero',
-        color: '#7aa637',
-        transparent: true,
-        showNavigation: true,
-        height: '6rem',
-      },
-      container: {
-        padding: '0',
-        className: 'landing-container',
-      },
-      footer: {
-        show: true,
-        variant: 'extended',
-      },
-    },
-  },
-  // wow: {
-  //   name: 'Wow',
-  //   description: 'a wow page',
-  //   config: {
-  //     name: 'oww',
-  //     header: {
-  //       type: 'standard',
-  //       transparent: true,
-  //       showNavigation: true,
-  //       height: '4rem',
-  //     },
-  //     container: {
-  //       padding: '0',
-  //       className: 'landing-container',
-  //     },
-  //     footer: {
-  //       show: true,
-  //       variant: 'extended',
-  //     },
-  //   },
-  // },
 }
 
-// Helper function to get layout config by name
 export function getLayoutConfig(layoutName: string): LayoutConfig {
   const preset = layoutPresets[layoutName]
   if (preset)
     return preset.config
 
-  // Fallback to simple layout
-  console.warn(`Layout preset "${layoutName}" not found. Using simple layout.`)
-  return layoutPresets.simple?.config ?? {
-    name: 'simple',
-    header: {
-      type: 'minimal',
-      showNavigation: true,
-      height: '3rem',
-    },
-    container: {
-      maxWidth: '1200px',
-      centered: true,
-      padding: '2rem',
-    },
-    footer: {
-      show: true,
-      variant: 'minimal',
-    },
-  }
+  console.warn(`Layout preset "${layoutName}" not found. Using marketing layout.`)
+  return layoutPresets.marketing!.config
 }
 
-// Helper function to create custom layout config
 export function createLayoutConfig(overrides: Partial<LayoutConfig>): LayoutConfig {
-  const baseConfig = getLayoutConfig('simple')
+  const baseConfig = getLayoutConfig('marketing')
   return {
     ...baseConfig,
     ...overrides,
