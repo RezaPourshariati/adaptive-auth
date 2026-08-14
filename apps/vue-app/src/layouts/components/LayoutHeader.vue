@@ -22,10 +22,22 @@ const headerTypeClasses = computed(() => {
   }
 })
 
-const headerStyles = computed(() => ({
-  backgroundColor: props.config.color || undefined,
-  height: props.config.height || undefined,
-}))
+const headerStyles = computed(() => {
+  const styles: Record<string, string> = {}
+
+  if (props.config.height)
+    styles.height = props.config.height
+
+  if (props.config.color) {
+    // Gradients must use `background`, not `background-color`.
+    if (props.config.color.includes('gradient'))
+      styles.background = props.config.color
+    else
+      styles.backgroundColor = props.config.color
+  }
+
+  return styles
+})
 </script>
 
 <template>

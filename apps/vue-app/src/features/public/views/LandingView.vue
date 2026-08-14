@@ -126,25 +126,24 @@
         </h2>
         <div class="flex items-center justify-center">
           <div class="bg-slate-900 rounded-xl p-8 max-w-2xl w-full overflow-x-auto md:p-6">
-            <pre class="m-0 font-mono text-sm leading-relaxed text-gray-100 md:text-xs"><code>// Router configuration
+            <pre class="m-0 font-mono text-sm leading-relaxed text-gray-100 md:text-xs"><code>// Parent owns layout; children fill the outlet
 {
-  path: '/dashboard',
-  component: Dashboard,
-  meta: {
-    layout: 'dashboard'
-  }
+  path: '/',
+  meta: { layout: 'app', requiresAuth: true },
+  children: [{
+    path: 'dashboard',
+    meta: {
+      showInNav: true,
+      navGroup: 'app',
+      title: 'Dashboard',
+    },
+  }]
 }
 
-// Custom layout
+// Product presets: auth | marketing | app | admin
 {
-  path: '/profile',
-  meta: {
-    layout: {
-      header: { type: 'hero' },
-      sidebar: { position: 'right' },
-      container: { maxWidth: '1000px' }
-    }
-  }
+  path: '/about',
+  meta: { layout: 'marketing' }
 }</code></pre>
           </div>
         </div>

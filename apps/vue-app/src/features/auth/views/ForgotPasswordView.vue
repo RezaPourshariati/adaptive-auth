@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { parseForgotPasswordBody } from '@adaptive-auth/validation'
 import { ref } from 'vue'
-import AuthNotice from '@/components/auth/AuthNotice.vue'
 import { useAuthStore } from '@/features/auth'
+import AuthNotice from '@/shared/components/feedback/AuthNotice.vue'
 
 const authStore = useAuthStore()
 const email = ref('')

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/features/auth'
+import { buildNavLinks } from '@/layouts'
 
 interface Props {
   variant?: 'minimal' | 'standard' | 'hero'
@@ -14,32 +15,11 @@ const props = withDefaults(defineProps<Props>(), {
 const router = useRouter()
 const authStore = useAuthStore()
 
-const publicLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-  { name: 'Contacts', path: '/contacts' },
-  { name: 'Landing', path: '/landing' },
-]
-
-const protectedLinks = computed(() => {
-  const links = [
-    { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Profile', path: '/profile' },
-  ]
-  if (authStore.hasRole('admin') || authStore.hasRole('author'))
-    links.push({ name: 'Users', path: '/users' })
-  return links
-})
-
-const guestLinks = [
-  { name: 'Login', path: '/login' },
-  { name: 'Register', path: '/register' },
-]
-
 const navigationLinks = computed(() => {
-  return authStore.isAuthenticated
-    ? [...publicLinks, ...protectedLinks.value]
-    : [...publicLinks, ...guestLinks]
+  return buildNavLinks(router, {
+    isAuthenticated: authStore.isAuthenticated,
+    hasRole: role => authStore.hasRole(role),
+  })
 })
 
 function getLinkClasses(variant: string) {
@@ -63,7 +43,6 @@ async function handleLogout() {
 </script>
 
 <template>
-  <!-- ✅ 95% TailwindCSS + 5% custom active states -->
   <nav class="flex items-center space-x-1 md:space-x-2">
     <router-link
       v-for="link in navigationLinks"
@@ -87,8 +66,6 @@ async function handleLogout() {
 </template>
 
 <style scoped>
-/* ✅ Only complex router-link active states (5% of styling) */
-
 .nav-link-animated {
   position: relative;
 }
@@ -110,7 +87,6 @@ async function handleLogout() {
   animation: expandUnderline 0.3s ease-out forwards;
 }
 
-/* Hero variant active state */
 .nav-link-animated.router-link-active:where(.text-white\/90) {
   color: white;
   background-color: rgba(255, 255, 255, 0.2);
