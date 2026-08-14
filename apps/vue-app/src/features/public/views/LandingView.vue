@@ -6,7 +6,7 @@
   <div class="p-0">
     <!-- Hero Section -->
     <section class="landing-hero min-h-[80vh] flex items-center justify-center text-white px-16 py-16 relative overflow-hidden md:flex-row flex-col text-center md:text-left md:px-8 md:py-8">
-      <div class="flex-1 max-w-[600px] z-10 relative">
+      <div class="flex-1 max-w-150 z-10 relative">
         <h1 class="text-3xl md:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
           AdaptiveAuth
         </h1>
@@ -23,12 +23,12 @@
         </div>
       </div>
       <div class="flex-1 flex items-center justify-center z-10 relative md:mt-8">
-        <div class="layout-preview w-[300px] h-[200px] bg-white rounded-xl shadow-2xl overflow-hidden md:w-[250px] md:h-[160px]">
+        <div class="layout-preview w-75 h-50 bg-white rounded-xl shadow-2xl overflow-hidden md:w-62.5 md:h-40">
           <div class="h-10 bg-gray-100 border-b border-gray-200" />
           <div class="flex h-[calc(100%-40px)]">
             <div class="w-20 bg-emerald-600 opacity-80" />
             <div
-              class="flex-1 bg-gradient-to-br from-gray-100 via-transparent to-gray-100"
+              class="flex-1 bg-linear-to-br from-gray-100 via-transparent to-gray-100"
               style="background-size: 20px 20px"
             />
           </div>
