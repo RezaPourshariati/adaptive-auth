@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import AuthNotice from '@/components/auth/AuthNotice.vue'
 import { useAuthStore } from '@/features/auth'
+import AuthNotice from '@/shared/components/feedback/AuthNotice.vue'
 
 const route = useRoute()
 const router = useRouter()
