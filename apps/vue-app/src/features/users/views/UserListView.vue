@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { UserRole } from '@/types'
+import type { UserRole } from '@/shared/types'
 import { onMounted, ref } from 'vue'
-import AuthNotice from '@/components/auth/AuthNotice.vue'
 import { useUsersStore } from '@/features/users'
+import AuthNotice from '@/shared/components/feedback/AuthNotice.vue'
 
 const usersStore = useUsersStore()
 const message = ref('')

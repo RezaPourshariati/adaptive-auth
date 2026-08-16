@@ -1,4 +1,4 @@
-import type { AuthUser, UpgradeUserPayload } from '@/types'
+import type { AuthUser, UpgradeUserPayload } from '@/shared/types'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '@/features/auth/store/auth.store'
 import * as usersService from '@/features/users/api/users.api'
