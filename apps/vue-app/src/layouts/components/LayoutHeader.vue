@@ -12,7 +12,7 @@ const props = defineProps<Props>()
 const headerTypeClasses = computed(() => {
   switch (props.config.type) {
     case 'minimal':
-      return 'h-12 border-b border-gray-200'
+      return 'h-12 border-b border-b-gray-200'
     case 'standard':
       return 'h-20 shadow-sm'
     case 'hero':
@@ -43,7 +43,7 @@ const headerStyles = computed(() => {
 <template>
   <!-- ✅ 90% TailwindCSS + 10% custom complex styles -->
   <header
-    class="w-full flex items-center transition-all duration-300"
+    class="w-full flex items-center transition-[height,box-shadow,background-color,background] duration-300"
     :class="[
       headerTypeClasses,
       { 'header-glassmorphism': config.transparent },
