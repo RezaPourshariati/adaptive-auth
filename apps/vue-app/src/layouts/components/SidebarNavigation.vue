@@ -1,16 +1,28 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/features/auth'
+import { buildNavLinks } from '@/layouts'
+
 interface Props {
   variant?: string
 }
 
 defineProps<Props>()
 
-const navigationLinks = [
-  { name: 'Dashboard', path: '/dashboard', icon: '📊' },
-  { name: 'Profile', path: '/profile', icon: '👤' },
-  { name: 'Settings', path: '/settings', icon: '⚙️' },
-  { name: 'Help', path: '/help', icon: '❓' },
-]
+const router = useRouter()
+const authStore = useAuthStore()
+
+const navigationLinks = computed(() => {
+  return buildNavLinks(
+    router,
+    {
+      isAuthenticated: authStore.isAuthenticated,
+      hasRole: role => authStore.hasRole(role),
+    },
+    ['app', 'admin'],
+  )
+})
 </script>
 
 <template>
@@ -27,7 +39,6 @@ const navigationLinks = [
           :to="link.path"
           class="nav-item"
         >
-          <span class="nav-icon">{{ link.icon }}</span>
           <span class="nav-text">{{ link.name }}</span>
         </router-link>
       </li>
@@ -72,11 +83,6 @@ const navigationLinks = [
 .nav-item.router-link-active {
   background: #42b983;
   color: white;
-}
-
-.nav-icon {
-  margin-right: 0.75rem;
-  font-size: 1.1rem;
 }
 
 .nav-text {

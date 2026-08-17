@@ -1,5 +1,6 @@
-// Layout configuration types
 import type { Component } from 'vue'
+
+export type NavGroup = 'public' | 'guest' | 'app' | 'admin'
 
 export interface HeaderConfig {
   type: 'minimal' | 'standard' | 'hero'
@@ -41,7 +42,6 @@ export interface LayoutConfig {
   className?: string
 }
 
-// Predefined layout presets for common use cases
 export interface LayoutPreset {
   name: string
   config: LayoutConfig
@@ -53,7 +53,13 @@ export interface ResolvedLayouts {
   config?: LayoutConfig
 }
 
-// Route meta extension
+export interface NavLink {
+  name: string
+  path: string
+  navGroup: NavGroup
+  navOrder: number
+}
+
 declare module 'vue-router' {
   interface RouteMeta {
     layout?: string | LayoutConfig
@@ -61,5 +67,8 @@ declare module 'vue-router' {
     guestOnly?: boolean
     roles?: string[]
     title?: string
+    showInNav?: boolean
+    navGroup?: NavGroup
+    navOrder?: number
   }
 }
