@@ -58,6 +58,11 @@ Split the page when it answers more than one primary question. Reference pages m
 - [`reference/monorepo-rollout.md`](./reference/monorepo-rollout.md) — phased monorepo / canvas-aligned rollout checklist
 - [`reference/adaptive-auth-platform-documentation.md`](./reference/adaptive-auth-platform-documentation.md) — comprehensive platform documentation
 
+## Ideas / Discovery
+
+- [`ideas/beauty-platform-idea.md`](./ideas/beauty-platform-idea.md) — discovery brief for a beauty/salon product
+- [`ideas/beauty-platform-feasibility-analysis.md`](./ideas/beauty-platform-feasibility-analysis.md) — market, wedge, architecture, and go/no-go recommendation
+
 ## Legacy / Prior Notes
 
 These are older documents and may not fully reflect the current architecture:
