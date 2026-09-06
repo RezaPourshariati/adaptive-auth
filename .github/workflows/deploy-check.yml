@@ -6,6 +6,7 @@ on:
     paths:
       - 'apps/vue-app/**'
       - 'apps/nuxt-app/**'
+      - 'apps/barbershop/**'
       - 'services/auth-server/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -179,3 +180,33 @@ jobs:
 
       - name: Build auth-server
         run: pnpm build:auth-server
+
+  deploy-check-barbershop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint barbershop
+        run: pnpm lint:barbershop
+
+      - name: Type check barbershop
+        run: pnpm type-check:barbershop
+
+      - name: Test barbershop
+        run: pnpm test:barbershop
+
+      - name: Build barbershop
+        run: pnpm build:barbershop

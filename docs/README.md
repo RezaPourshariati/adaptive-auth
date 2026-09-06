@@ -62,6 +62,12 @@ Split the page when it answers more than one primary question. Reference pages m
 
 - [`ideas/beauty-platform-idea.md`](./ideas/beauty-platform-idea.md) — discovery brief for a beauty/salon product
 - [`ideas/beauty-platform-feasibility-analysis.md`](./ideas/beauty-platform-feasibility-analysis.md) — market, wedge, architecture, and go/no-go recommendation
+- [`ideas/one-beauty-business-platform-first.md`](./ideas/one-beauty-business-platform-first.md) — Crypto Barber Shop as the first real implementation
+- [`ideas/one-business-first-crypto-barber-review.md`](./ideas/one-business-first-crypto-barber-review.md) — review of the one-business-first scenario, AdaptiveAuth reuse, and MVP cut
+- [`ideas/start-beauty-platform.md`](ideas/start-beauty-platform-1.md) — Crypto Barber product & architecture brief (current)
+- [`ideas/crypto-barber-architecture-proposal.md`](./ideas/crypto-barber-architecture-proposal.md) — architecture proposal answering that brief (folder, schema, concurrency, MVP)
+- [`ideas/start-beauty-platform-2.md`](./ideas/start-beauty-platform-2.md) — current source of truth (architecture + phased plan)
+- [`ideas/crypto-barber-plan-acceptance.md`](./ideas/crypto-barber-plan-acceptance.md) — acceptance of that plan and Phase 0 scope
 
 ## Legacy / Prior Notes
 

@@ -1,0 +1,22 @@
+html,
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+.page {
+  max-width: 40rem;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
+}
+
+.kicker {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+h1 {
+  font-size: 1.75rem;
+}
