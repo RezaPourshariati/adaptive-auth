@@ -13,21 +13,30 @@
     "lint": "eslint \"app/**/*.{ts,vue}\" \"server/**/*.ts\" \"tests/**/*.ts\" \"*.ts\" \"*.mjs\"",
     "lint:fix": "eslint \"app/**/*.{ts,vue}\" \"server/**/*.ts\" \"tests/**/*.ts\" \"*.ts\" \"*.mjs\" --fix",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx --env-file=.env server/db/seed.ts"
   },
   "dependencies": {
+    "@primeuix/themes": "^2.0.3",
+    "@primevue/nuxt-module": "^4.5.5",
     "drizzle-orm": "^0.44.5",
     "nuxt": "^4.4.6",
     "postgres": "^3.4.7",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.5",
     "vue": "^3.5.34",
-    "vue-router": "^5.0.7"
+    "vue-router": "^5.0.7",
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@adaptive-auth/config-typescript": "workspace:*",
     "@adaptive-auth/eslint-config": "workspace:*",
+    "@tailwindcss/vite": "^4.3.0",
     "@types/node": "^25.9.0",
     "drizzle-kit": "^0.31.4",
     "eslint": "^10.4.0",
+    "tailwindcss": "^4.3.0",
+    "tsx": "^4.22.3",
     "typescript": "^6.0.3",
     "vitest": "^4.1.7",
     "vue-tsc": "^3.3.0"
