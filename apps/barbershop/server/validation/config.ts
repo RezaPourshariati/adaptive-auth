@@ -44,3 +44,33 @@ export const staffBodySchema = z.object({
   active: z.boolean(),
   serviceIds: z.array(z.string().uuid()),
 })
+
+export const availabilityQuerySchema = z.object({
+  localDate: z.string(),
+  serviceIds: z.preprocess((value) => {
+    if (typeof value === 'string' && value.includes(','))
+      return value.split(',').map(item => item.trim())
+    return value
+  }, z.union([z.string().uuid(), z.array(z.string().uuid())])),
+  staffMemberId: z.string().uuid().optional(),
+})
+
+export const reserveBodySchema = z.object({
+  serviceIds: z.array(z.string().uuid()).min(1),
+  staffMemberId: z.string().uuid().optional(),
+  source: z.enum(['online', 'phone', 'walk_in', 'staff_created']).default('online'),
+  guestName: z.string().min(1).max(80),
+  guestPhone: z.string().max(40).optional(),
+  guestEmail: z.string().email().optional(),
+  notes: z.string().max(500).optional(),
+  localDate: z.string().optional(),
+  startLocal: z.string().optional(),
+  startAt: z.string().optional(),
+})
+
+export const calendarBlockBodySchema = z.object({
+  staffMemberId: z.string().uuid().optional(),
+  startAt: z.string(),
+  endAt: z.string(),
+  title: z.string().min(1).max(80),
+})
