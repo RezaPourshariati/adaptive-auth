@@ -13,20 +13,17 @@
 
 The brief is now the right product shape: **one shop, calendar as the core, auto-confirm, guest booking, PostgreSQL overlap safety, no AdaptiveAuth runtime, no multi-tenant platform.**
 
-Build it as `apps/barbershop` (Nuxt 4 + Nitro + Drizzle + PostgreSQL), isolated at *runtime* from AdaptiveAuth. Do not put a root `crypto-barber-shop/` folder outside the pnpm workspace.
+Build it as `apps/barbershop` (Nuxt 4 + Nitro + Drizzle + PostgreSQL), isolated at _runtime_ from AdaptiveAuth. Do not put a root `crypto-barber-shop/` folder outside the pnpm workspace.
 
-**Still cut from the first milestone:** customer OTP, deposit collection, drag-and-drop calendar, and any SMS vendor until the guest-book → calendar → outcome loop works. Keep the *schema* ready for OTP, no-show counts, and `requires_deposit`.
+**Still cut from the first milestone:** customer OTP, deposit collection, drag-and-drop calendar, and any SMS vendor until the guest-book → calendar → outcome loop works. Keep the _schema_ ready for OTP, no-show counts, and `requires_deposit`.
 
 **Do not copy** `apps/nuxt-app` **as-is.** That app is `ssr: false` and talks to AdaptiveAuth. The public barbershop site needs SSR.
 
 ---
 
-
-
 ## 1. What I agree with
 
 These decisions in `start-beauty-platform.md` are correct. Do not reopen them:
-
 
 | Decision                                                          | Why                                               |
 | ----------------------------------------------------------------- | ------------------------------------------------- |
@@ -44,17 +41,13 @@ These decisions in `start-beauty-platform.md` are correct. Do not reopen them:
 | No AdaptiveAuth runtime dependency                                | Correct.                                          |
 | Stay in this git repo for now                                     | Accepted as a constraint.                         |
 
-
 ---
-
-
 
 ## 2. Remaining contradictions and unknowns
 
 Do not silently invent shop policy. Confirm with the owner before coding hours, prices, or cancel copy.
 
 ### 2.1 Live website vs this brief
-
 
 | Topic         | Live site (cryptobarbershops.com, Sep 2026)                                          | This brief                                         | Action                                                                                                                                                        |
 | ------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -64,9 +57,6 @@ Do not silently invent shop policy. Confirm with the owner before coding hours, 
 | Booking order | Stylist first                                                                        | Service first, then barber / any                   | Either works. **Recommend service → barber / any** because “Any Barber” needs a service to know duration and capability. Stylist-first can be a later toggle. |
 | Services      | Fade, Cut, Fade+Beard, Kids Fade, Senior, plus gallery names (scissor, design, etc.) | 40–60 min typical; durations not listed            | **Do not invent prices or minutes.** Seed names after owner supplies a list.                                                                                  |
 | Domain        | cryptobarbershops.com                                                                | cryptobarbershop.com                               | DNS is ops. App uses `PUBLIC_SITE_URL`.                                                                                                                       |
-
-
-
 
 ### 2.2 Language in §16
 
@@ -91,8 +81,6 @@ MVP: `NotificationPort` **+ email adapter + SMS adapter.** If SMS credentials ar
 Canada: transactional booking SMS is usually fine; promotional “offers” later need CASL consent. Do not send marketing SMS from the booking path.
 
 ---
-
-
 
 ## 3. A. Repository / folder structure
 
@@ -127,8 +115,6 @@ Copy patterns (CSRF, session cookies, typed errors) as **local files** under `se
 
 ---
 
-
-
 ## 4. B. Application architecture
 
 ```text
@@ -154,7 +140,6 @@ PostgreSQL
   notification_outbox
 ```
 
-
 | Layer         | Choice                                                       | Reason                                                       |
 | ------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | Public UI     | Nuxt 4, **SSR on**                                           | Google / Maps traffic. Opposite of current `nuxt-app`.       |
@@ -164,15 +149,12 @@ PostgreSQL
 | DB access     | **Drizzle**                                                  | SQL we control; `tstzrange` and raw `EXCLUDE` in migrations. |
 | Jobs          | Outbox table + request-end drain                             | No Redis/BullMQ until volume hurts.                          |
 | Files         | Static `/public` for gallery v1                              | Object storage later.                                        |
-| Staff auth    | Email + password, httpOnly cookies, CSRF, server session row | AdaptiveAuth *ideas*, local tables.                          |
+| Staff auth    | Email + password, httpOnly cookies, CSRF, server session row | AdaptiveAuth _ideas_, local tables.                          |
 | Customer auth | Schema only in milestone 1; OTP in 1.5                       | See §H.                                                      |
 
-
-Dashboard layout: marketing vs app chrome, similar *idea* to vue-app presets (`marketing` / `app`). Implement locally. PrimeVue is fine **inside** `/app`. Do not force Aura on the public brand site.
+Dashboard layout: marketing vs app chrome, similar _idea_ to vue-app presets (`marketing` / `app`). Implement locally. PrimeVue is fine **inside** `/app`. Do not force Aura on the public brand site.
 
 ---
-
-
 
 ## 5. C. Domain model
 
@@ -199,8 +181,6 @@ business
 
 ---
 
-
-
 ## 6. D. PostgreSQL schema (core)
 
 Timezone for display and “today”: `America/Vancouver`. Instants in DB are `timestamptz`. Ranges are **half-open** `[start, end)` so 10:00–10:40 and 10:40–11:20 do not overlap.
@@ -224,13 +204,12 @@ EXCLUDE USING gist (
 
 Important tables (columns abbreviated):
 
-
 | Table                 | Role                                                                                                             |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------ |
 | `business`            | One seeded row. Hours defaults, cancel policy JSON, deposit %, timezone.                                         |
 | `staff_member`        | `business_id`, name, `active`, sort_order.                                                                       |
-| `staff_user`          | email, password hash, role `owner|manager|barber`, optional `staff_member_id`.                                   |
-| `staff_session`       | refresh hash, idle/absolute timestamps (same *policy idea* as AdaptiveAuth).                                     |
+| `staff_user`          | email, password hash, role `owner                                                                                | manager                               | barber`, optional `staff_member_id`. |
+| `staff_session`       | refresh hash, idle/absolute timestamps (same _policy idea_ as AdaptiveAuth).                                     |
 | `service`             | duration_minutes, price_cents, active.                                                                           |
 | `staff_service`       | capability.                                                                                                      |
 | `customer`            | name, phone, email nullable, `no_show_count`, `late_cancel_count`, `requires_deposit`.                           |
@@ -239,18 +218,15 @@ Important tables (columns abbreviated):
 | `appointment`         | `during tstzrange`, `staff_member_id`, `customer_id` null, `source`, `status`, guest denormalized.               |
 | `appointment_service` | service_id, name/duration/price **snapshot**.                                                                    |
 | `calendar_block`      | `during`, staff_member_id, reason (`busy_walk_in`, `break`, `day_off`, …).                                       |
-| `working_hours`       | `owner_type` business|staff, weekday, local start/end time.                                                      |
+| `working_hours`       | `owner_type` business                                                                                            | staff, weekday, local start/end time. |
 | `notification_outbox` | channel, template, payload, status.                                                                              |
 | `deposit`             | exists as table, **no provider columns required in MVP** except `required` / `percent` / `status=not_collected`. |
-
 
 Indexes: `(staff_member_id, during)` gist; `(business_id, start)` for day queries; customer phone.
 
 JSONB: **policy settings only** (cancel rules). Not appointments.
 
 ---
-
-
 
 ## 7. E. Booking concurrency
 
@@ -280,8 +256,6 @@ Two guests, same barber, same `tstzrange`: one commit, one 409. That is the requ
 
 ---
 
-
-
 ## 8. F. Availability algorithm
 
 Inputs: `serviceId`, `staffMemberId | ANY`, `localDate`, now.
@@ -298,7 +272,6 @@ Inputs: `serviceId`, `staffMemberId | ANY`, `localDate`, now.
 
 **Assumptions (label as such until owner confirms):**
 
-
 | Assumption                  | Default           | Why it matters                                    |
 | --------------------------- | ----------------- | ------------------------------------------------- |
 | Slot grid                   | 10 minutes        | 75-minute services still land on clock times.     |
@@ -307,10 +280,7 @@ Inputs: `serviceId`, `staffMemberId | ANY`, `localDate`, now.
 | Book-ahead window           | **14 days**       | Stops infinite calendars.                         |
 | Timezone                    | America/Vancouver | DST.                                              |
 
-
 ---
-
-
 
 ## 9. G. Calendar architecture (resource timeline)
 
@@ -327,8 +297,6 @@ Data: `GET /api/staff/schedule?date=` returns members + appointments + blocks. M
 Inactive barbers: omitted from columns; historical appointments still openable from customer history.
 
 ---
-
-
 
 ## 10. H. Customer authentication (OTP)
 
@@ -351,12 +319,9 @@ Staff login: email/password (or invite token). Separate cookies (`staff_session`
 
 ---
 
-
-
 ## 11. I. Appointment lifecycle
 
 Statuses that occupy a chair: `confirmed` **only**.
-
 
 | Event             | Status / source                 | Occupies chair?                                 |
 | ----------------- | ------------------------------- | ----------------------------------------------- |
@@ -368,7 +333,6 @@ Statuses that occupy a chair: `confirmed` **only**.
 | Customer cancel   | `cancelled`                     | **No** (range kept for history)                 |
 | No-show           | `no_show`                       | **No** going forward; history + counters        |
 | Done              | `completed`                     | **No** (past; do not leave `confirmed` forever) |
-
 
 **Close-out:** staff mark completed or no-show. A job can mark `confirmed` + `end_at < now - grace` as still confirmed until staff act — **assumption:** no auto-no-show in MVP; staff tap it. Auto-no-show later.
 
@@ -390,8 +354,6 @@ MVP UX: show policy on `/book`; online cancel allowed only if `now < start - not
 
 ---
 
-
-
 ## 12. J. Notification architecture
 
 ```text
@@ -409,11 +371,7 @@ Never call the provider inside the reservation transaction.
 
 ---
 
-
-
 ## 13. K. MVP vs nice-to-have vs future SaaS
-
-
 
 ### MVP (definition of done = §37 minus login and minus card deposit)
 
@@ -428,8 +386,6 @@ Never call the provider inside the reservation transaction.
 9. Customer row by phone for history; `requires_deposit` flag (manual)
 10. Policy text from `business` settings
 
-
-
 ### Nice-to-have (after the shop uses it)
 
 - Customer OTP
@@ -441,15 +397,11 @@ Never call the provider inside the reservation transaction.
 - After-hours pricing
 - Public site polish / gallery CMS
 
-
-
 ### Future SaaS / do not build
 
 - Tenants, domains, billing, marketplace, AI, loyalty, POS, AdaptiveAuth wiring, Redis, mobile app, crypto checkout
 
 ---
-
-
 
 ## 14. Adjusted implementation order
 
@@ -470,10 +422,7 @@ The brief’s order is close. Change: **notifications after first reserve**, **O
 
 ---
 
-
-
 ## 15. Patterns to copy from AdaptiveAuth (and what not to copy)
-
 
 | Copy as a local implementation                 | Do not copy                                      |
 | ---------------------------------------------- | ------------------------------------------------ |
@@ -483,10 +432,7 @@ The brief’s order is close. Change: **notifications after first reserve**, **O
 | Typed errors + Zod at the boundary             | `ssr: false` Nuxt app                            |
 | Feature folders, layout chrome vs page         | Default `phone: '+98'`                           |
 
-
 ---
-
-
 
 ## 16. Challenge summary (for approval)
 

@@ -46,7 +46,7 @@ These do not block Phase 0.
 
 **Hours 08:00–19:00** are seed/config, not code constants. Live WordPress copy still disagrees; the owner’s brief wins until they change it in the dashboard.
 
-**Prices and service list** remain missing. Do not invent them. Phase 1 dashboard captures them.
+**Service list:** Phase 1 seeds example defaults (live-site names + typical Vancouver CAD prices/durations). The dashboard can change them. They are not the shop's locked menu.
 
 **Website content** (images, exact menu) still comes from cryptobarbershops.com / the owner. Phase 8.
 
@@ -65,7 +65,9 @@ These do not block Phase 0.
 
 **Definition of done:** app runs; health works without Postgres (`unconfigured`); with `DATABASE_URL`, health can ping; lint, typecheck, unit tests, and production build succeed.
 
-Stop after Phase 0. Phase 1 (business configuration dashboard) needs explicit approval.
+Phase 1 is implemented: staff login, services/barbers/hours/business dashboard, and editable seed defaults. Calendar is still Phase 2.
+
+To use the dashboard: start Postgres, copy `.env.example` to `.env`, then `pnpm --dir apps/barbershop db:migrate` and `db:seed`.
 
 ---
 
