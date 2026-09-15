@@ -8,6 +8,20 @@
       "when": 1788677383936,
       "tag": "0000_brainy_robin_chapel",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789210999100,
+      "tag": "0001_remarkable_slyde",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789299908994,
+      "tag": "0002_curious_scarecrow",
+      "breakpoints": true
     }
   ]
 }

@@ -1,10 +1,10 @@
 import { and, eq, ne } from 'drizzle-orm'
-import { getDb } from '../../../db/client'
-import { service } from '../../../db/schema'
-import { assertName, assertServiceDuration, centsToDollars, dollarsToCents } from '../../../domain/rules'
-import { badRequest, notFound, throwDomain } from '../../../utils/http-error'
-import { requireStaff } from '../../../utils/staff-auth'
-import { serviceBodySchema } from '../../../validation/config'
+import { getDb } from '#server/db/client'
+import { service } from '#server/db/schema'
+import { assertName, assertServiceDuration, centsToDollars, dollarsToCents } from '#server/domain/rules'
+import { badRequest, notFound, throwDomain } from '#server/utils/http-error'
+import { requireStaff } from '#server/utils/staff-auth'
+import { serviceBodySchema } from '#server/validation/config'
 
 export default defineEventHandler(async (event) => {
   const user = await requireStaff(event)

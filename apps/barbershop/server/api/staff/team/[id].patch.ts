@@ -1,6 +1,7 @@
-import { and, eq, inArray } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
+import { replaceStaffServices } from '../../../application/staff-services'
 import { getDb } from '../../../db/client'
-import { service, staffMember, staffService } from '../../../db/schema'
+import { staffMember } from '../../../db/schema'
 import { assertName } from '../../../domain/rules'
 import { badRequest, notFound, throwDomain } from '../../../utils/http-error'
 import { requireStaff } from '../../../utils/staff-auth'
@@ -32,31 +33,24 @@ export default defineEventHandler(async (event) => {
   if (!current[0])
     notFound('Barber not found.')
 
-  if (parsed.data.serviceIds.length) {
-    const allowed = await db.select({ id: service.id }).from(service).where(and(
-      eq(service.businessId, user.businessId),
-      inArray(service.id, parsed.data.serviceIds),
-    ))
-    if (allowed.length !== parsed.data.serviceIds.length)
-      badRequest('One or more services are invalid.')
-  }
-
-  const [updated] = await db.update(staffMember).set({
-    name,
-    specialty: parsed.data.specialty?.trim() || null,
-    active: parsed.data.active,
-    updatedAt: new Date(),
-  }).where(eq(staffMember.id, id)).returning()
-
-  await db.delete(staffService).where(eq(staffService.staffMemberId, id))
-  if (parsed.data.serviceIds.length) {
-    await db.insert(staffService).values(
-      parsed.data.serviceIds.map(serviceId => ({
+  try {
+    const updated = await db.transaction(async (tx) => {
+      const [row] = await tx.update(staffMember).set({
+        name,
+        specialty: parsed.data.specialty?.trim() || null,
+        active: parsed.data.active,
+        updatedAt: new Date(),
+      }).where(eq(staffMember.id, id)).returning()
+      await replaceStaffServices(tx, {
+        businessId: user.businessId,
         staffMemberId: id,
-        serviceId,
-      })),
-    )
+        serviceIds: parsed.data.serviceIds,
+      })
+      return row
+    })
+    return { staff: { ...updated, serviceIds: parsed.data.serviceIds } }
   }
-
-  return { staff: { ...updated, serviceIds: parsed.data.serviceIds } }
+  catch (error) {
+    throwDomain(error)
+  }
 })
