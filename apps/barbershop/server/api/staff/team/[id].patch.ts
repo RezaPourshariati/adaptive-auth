@@ -1,11 +1,11 @@
 import { and, eq } from 'drizzle-orm'
-import { replaceStaffServices } from '../../../application/staff-services'
-import { getDb } from '../../../db/client'
-import { staffMember } from '../../../db/schema'
-import { assertName } from '../../../domain/rules'
-import { badRequest, notFound, throwDomain } from '../../../utils/http-error'
-import { requireStaff } from '../../../utils/staff-auth'
-import { staffBodySchema } from '../../../validation/config'
+import { replaceStaffServices } from '#server/application/staff-services'
+import { getDb } from '#server/db/client'
+import { staffMember } from '#server/db/schema'
+import { assertName } from '#server/domain/rules'
+import { badRequest, notFound, throwDomain } from '#server/utils/http-error'
+import { requireStaff } from '#server/utils/staff-auth'
+import { staffBodySchema } from '#server/validation/config'
 
 export default defineEventHandler(async (event) => {
   const user = await requireStaff(event)
