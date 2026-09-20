@@ -1,5 +1,4 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
-import { createError } from 'nuxt/app'
 import postgres from 'postgres'
 import { readDatabaseUrl } from './env'
 import * as schema from './schema'
@@ -18,14 +17,14 @@ export function getSql(): ReturnType<typeof postgres> | null {
 export function getDb() {
   const client = getSql()
   if (!client)
-    throw createError({ status: 503, statusText: 'Database is not configured.' })
+    throw createError({ statusCode: 503, statusMessage: 'Database is not configured.' })
   return drizzle(client, { schema })
 }
 
 export function requireSql() {
   const client = getSql()
   if (!client)
-    throw createError({ status: 503, statusText: 'Database is not configured.' })
+    throw createError({ statusCode: 503, statusMessage: 'Database is not configured.' })
   return client
 }
 
