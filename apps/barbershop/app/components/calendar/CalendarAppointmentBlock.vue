@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CalendarAppointment } from '~/utils/calendar-types'
-import { sourceLabel } from '../../utils/calendar-layout'
+import { sourceLabel } from '~/utils/calendar-layout'
 
 defineProps<{
   appointment: CalendarAppointment

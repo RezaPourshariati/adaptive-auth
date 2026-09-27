@@ -14,7 +14,7 @@ Browser
 ## Layers
 
 - `server/api/` — HTTP only. Staff `businessId` comes from the session, never from the client body.
-- `server/application/scheduling/` — `checkAvailability`, `reserveAppointment`, `cancelAppointment`, `createCalendarBlock`, `pickBarberOrder`. No H3/`createError`.
+- `server/application/scheduling/` — `checkAvailability`, `reserveAppointment`, `cancelAppointment`, `completeAppointment`, `markNoShow`, `createCalendarBlock`, `updateCalendarBlock`, `cancelCalendarBlock`, `getCalendarDay`, `pickBarberOrder`. No H3/`createError`.
 - `server/domain/scheduling/` — slot grid, hour intersection, timezone, half-open ranges, error helpers.
 - `server/db/` — Drizzle + PostgreSQL.
 

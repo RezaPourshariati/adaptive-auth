@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CalendarAppointment, CalendarBlockItem, CalendarStaff } from '~/utils/calendar-types'
-import { sourceLabel } from '../../utils/calendar-layout'
+import { sourceLabel } from '~/utils/calendar-layout'
 
 const props = defineProps<{
   staff: CalendarStaff[]
