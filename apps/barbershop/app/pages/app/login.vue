@@ -14,7 +14,7 @@ async function submit() {
       method: 'POST',
       body: { email: email.value, password: password.value },
     })
-    await navigateTo('/app')
+    await navigateTo('/app/calendar')
   }
   catch (err: unknown) {
     const typed = err as { statusMessage?: string, statusCode?: number }

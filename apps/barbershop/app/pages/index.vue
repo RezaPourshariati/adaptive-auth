@@ -7,7 +7,7 @@
       Operations dashboard
     </h1>
     <p class="mb-6 text-muted">
-      Configure services, barbers, and hours. Booking and the calendar come in later phases.
+      Configure services, barbers, and hours from the staff dashboard. The staff calendar is there too. Public booking comes later.
     </p>
     <NuxtLink
       to="/app"

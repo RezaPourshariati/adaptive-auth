@@ -68,9 +68,31 @@ export const reserveBodySchema = z.object({
   startAt: z.string().optional(),
 })
 
-export const calendarBlockBodySchema = z.object({
-  staffMemberId: z.string().uuid().optional(),
-  startAt: z.string(),
-  endAt: z.string(),
+const blockTimeFields = {
+  staffMemberId: z.string().uuid().nullable().optional(),
+  startAt: z.string().optional(),
+  endAt: z.string().optional(),
+  localDate: z.string().optional(),
+  startLocal: z.string().optional(),
+  endLocal: z.string().optional(),
   title: z.string().min(1).max(80),
+}
+
+function hasBlockRange(value: { startAt?: string, endAt?: string, localDate?: string, startLocal?: string, endLocal?: string }) {
+  return Boolean((value.startAt && value.endAt) || (value.localDate && value.startLocal && value.endLocal))
+}
+
+export const calendarBlockBodySchema = z.object(blockTimeFields).refine(hasBlockRange, {
+  message: 'Start and end are required.',
+})
+
+export const calendarBlockUpdateSchema = z.object({
+  ...blockTimeFields,
+  staffMemberId: z.string().uuid().nullable(),
+}).refine(hasBlockRange, {
+  message: 'Start and end are required.',
+})
+
+export const calendarQuerySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 })
