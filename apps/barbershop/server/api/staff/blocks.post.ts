@@ -1,3 +1,4 @@
+import { blockRangeForBusiness } from '../../application/scheduling/block-range'
 import { createCalendarBlock } from '../../application/scheduling/create-calendar-block'
 import { getDb } from '../../db/client'
 import { badRequest, throwDomain } from '../../utils/http-error'
@@ -11,11 +12,13 @@ export default defineEventHandler(async (event) => {
     badRequest('Check the block fields and try again.')
 
   try {
-    return await createCalendarBlock(getDb(), {
+    const db = getDb()
+    const range = await blockRangeForBusiness(db, user.businessId, parsed.data)
+    return await createCalendarBlock(db, {
       businessId: user.businessId,
       staffMemberId: parsed.data.staffMemberId,
-      startAt: parsed.data.startAt,
-      endAt: parsed.data.endAt,
+      startAt: range.startAt,
+      endAt: range.endAt,
       title: parsed.data.title,
     })
   }
